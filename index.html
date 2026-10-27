@@ -3,197 +3,1298 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="北京高中班级新媒体工作台：选题、成稿、口播、封面和发布清单。纯前端本地生成，不登录、不发布到平台。" />
+<meta name="theme-color" content="#f6f1e8" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%23c2410c'/%3E%3C/svg%3E" />
 <title>北京高中班级新媒体工作台</title>
 <style>
-:root{--bg:#f7f4ef;--card:#fff;--ink:#1c1917;--muted:#78716c;--line:#e7e5e4;--accent:#ea580c;--accent-soft:#fff7ed;--shadow:0 10px 30px rgba(28,25,23,.06);--radius:16px;--font:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif}
-*{box-sizing:border-box}body{margin:0;font-family:var(--font);color:var(--ink);background:radial-gradient(1200px 600px at 10% -10%,#ffedd5 0%,transparent 55%),radial-gradient(900px 500px at 100% 0%,#e0f2fe 0%,transparent 50%),var(--bg);min-height:100vh}
-.wrap{max-width:980px;margin:0 auto;padding:28px 18px 60px}header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:22px}
-.brand h1{margin:0;font-size:1.45rem}.brand p{margin:6px 0 0;color:var(--muted);font-size:.92rem;line-height:1.5}
-.pill{background:var(--accent-soft);color:var(--accent);border:1px solid #fed7aa;border-radius:999px;padding:6px 12px;font-size:.8rem;white-space:nowrap}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin-bottom:16px}
-.label{font-size:.8rem;color:var(--muted);margin-bottom:6px;margin-top:4px}.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
-.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;cursor:pointer;font-size:.9rem}.chip.active{background:var(--accent);border-color:var(--accent);color:#fff}
-textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:14px;font:inherit;resize:vertical;min-height:96px;outline:none}textarea:focus{border-color:#fdba74;box-shadow:0 0 0 3px rgba(234,88,12,.15)}
-.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
-button.primary{background:var(--accent);color:#fff;border:none;border-radius:12px;padding:12px 20px;font:inherit;font-weight:600;cursor:pointer}button.primary:disabled{opacity:.55;cursor:wait}
-button.ghost{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 16px;font:inherit;cursor:pointer}
-.hint{color:var(--muted);font-size:.85rem}.out-title{font-size:1.2rem;font-weight:700;margin:0 0 10px}
-.meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}.tag{background:#f5f5f4;border-radius:8px;padding:4px 8px;font-size:.78rem;color:#44403c}
-.body{white-space:pre-wrap;line-height:1.85;font-size:.98rem}.cover,.tags{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line);color:#44403c;font-size:.92rem}
-.empty{color:var(--muted);text-align:center;padding:28px 10px}.loading{display:none;align-items:center;gap:10px;color:var(--accent);font-size:.92rem}.loading.on{display:flex}
-.spinner{width:16px;height:16px;border:2px solid #fed7aa;border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
-.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#1c1917;color:#fff;padding:10px 16px;border-radius:999px;font-size:.9rem;opacity:0;pointer-events:none;transition:opacity .2s}.toast.on{opacity:1}
-footer{margin-top:18px;color:var(--muted);font-size:.8rem;text-align:center}
+:root{--bg:#f6f1e8;--ink:#2a241c;--muted:#7a7167;--line:#eadfce;--accent:#c2410c;--soft:#fff1e6;--card:#fff;--shadow:0 10px 28px rgba(90,58,32,.06);--font:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC","WenQuanYi Micro Hei","Droid Sans Fallback",system-ui,sans-serif}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:var(--font);color:var(--ink);background:radial-gradient(900px 420px at 100% -10%,#ffe8d2 0%,transparent 55%),var(--bg);font-size:16px;line-height:1.5}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+#side{position:fixed;inset:0 auto 0 0;width:228px;background:#f3eadf;border-right:1px solid var(--line);display:flex;flex-direction:column;padding:14px 10px 12px;z-index:30}
+.brand{display:flex;gap:10px;align-items:center;padding:4px 8px 14px}
+.seal{width:42px;height:42px;border-radius:14px;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:700;flex:none}
+.brand h1{font-size:1rem;margin:0}
+.brand p{margin:2px 0 0;color:var(--muted);font-size:.75rem}
+#nav{display:flex;flex-direction:column;gap:4px;overflow:auto}
+.nav{display:flex;align-items:center;gap:8px;width:100%;text-align:left;border:0;background:transparent;border-radius:12px;padding:10px;color:inherit}
+.nav.active{background:#fff;color:var(--accent);font-weight:600}
+.ic{width:18px;height:18px;flex:none}
+.badge{margin-left:auto;background:var(--soft);color:var(--accent);border-radius:99px;padding:1px 6px;font-size:.75rem}
+.foot{margin-top:auto;display:flex;gap:8px;align-items:center;width:100%;text-align:left;border:0;background:rgba(255,255,255,.6);border-radius:14px;padding:8px}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:700;flex:none}
+.foot small{display:block;color:var(--muted);font-size:.75rem}
+.main{margin-left:228px;min-height:100vh}
+.bar{display:flex;align-items:center;gap:8px;padding:12px 16px;position:sticky;top:0;background:rgba(246,241,232,.94);z-index:20;border-bottom:1px solid rgba(234,223,206,.9)}
+#crumb{font-weight:700}
+.grow{flex:1}
+#menuBtn{display:none;border:1px solid var(--line);background:#fff;border-radius:12px;padding:8px 12px}
+#newBtn{border:0;background:transparent;color:var(--accent);font-weight:600;padding:8px}
+.who{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 12px;max-width:42vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#mask{display:none;position:fixed;inset:0;border:0;background:rgba(42,36,28,.4);z-index:25}
+#view{width:min(920px,calc(100% - 28px));margin:0 auto;padding:14px 0 48px}
+#view, .body, .out-title, .cardbtn, .jump, .lib, .banner, h2, h3, p, .hint, .lead{overflow-wrap:anywhere}
+h2{margin:0 0 8px;font-size:1.35rem}
+.lead{color:var(--muted);margin:0 0 12px}
+.hero-title{text-align:center;font-size:clamp(1.35rem,2.4vw,1.8rem);margin:0 0 8px}
+.hero-sub{text-align:center;color:var(--muted);margin:0 0 14px}
+.composer,.result,.lib,details.pack,details.tool{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
+.composer{padding:18px 16px 14px}
+.result{border-left:4px solid var(--accent);padding:14px;margin-top:14px}
+.label{font-size:.8rem;color:var(--muted);margin:8px 0 6px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 12px}
+.chip.active{background:var(--accent);border-color:var(--accent);color:#fff}
+textarea,input[type="text"],input[type="search"]{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:#fff}
+textarea{min-height:96px;resize:vertical}
+textarea:focus,input:focus{outline:none;border-color:#fdba74;box-shadow:0 0 0 3px rgba(194,65,12,.15)}
+.actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
+.primary{background:var(--accent);color:#fff;border:0;border-radius:12px;padding:11px 16px;font-weight:600}
+.primary:disabled{opacity:.55;cursor:wait}
+.ghost{background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 14px}
+.tiny{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 10px;font-size:.82rem}
+.hint{color:var(--muted);font-size:.85rem}
+.sec{margin:22px 0 10px;font-size:1rem}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:12px}
+.tpl{border:0;border-radius:16px;min-height:108px;padding:12px;text-align:left;display:flex;flex-direction:column;justify-content:flex-end;gap:4px}
+.tpl b{font-size:.95rem}.tpl span{font-size:.78rem;color:#5c5348}
+.jump,.cardbtn{text-align:left;background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px;color:inherit}
+.jump b,.cardbtn strong{display:block}
+.jump span,.cardbtn span,.cardbtn em{display:block;color:var(--muted);font-size:.8rem;font-style:normal;margin-top:3px}
+.cardbtn .k{color:var(--accent);font-weight:600;font-size:.8rem}
+.banner{background:var(--soft);border:1px solid #f3d2bc;color:#7c3f1d;border-radius:14px;padding:12px 14px;line-height:1.6;margin:0 0 14px}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.tag,.pill{background:#f5f0e8;border-radius:8px;padding:3px 8px;font-size:.78rem}
+.pill{background:var(--soft);color:#9a3412}
+.body{white-space:pre-wrap;line-height:1.75}
+.extra{color:#44403c;font-size:.92rem}
+.frame{width:min(100%,320px);margin-top:8px}
+.frame.sm{width:min(100%,200px)}
+.frame canvas{width:100%;height:auto;border-radius:16px;display:block;box-shadow:var(--shadow)}
+.lib{padding:12px;margin:8px 0}
+.lib p{margin:6px 0;white-space:pre-wrap}
+details.pack,details.tool{padding:10px 12px;margin:8px 0}
+details summary{cursor:pointer;font-weight:600}
+.pack .body{max-height:240px;overflow:auto;background:#fbf7f2;border-radius:10px;padding:8px 10px}
+.check{display:flex;gap:8px;align-items:flex-start;padding:8px 0;border-bottom:1px dashed var(--line)}
+.check input{margin-top:4px;width:16px;height:16px}
+.foot-note{color:var(--muted);font-size:.8rem;text-align:center;margin-top:28px}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#2a241c;color:#fff;padding:10px 16px;border-radius:999px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:50}
+.toast.on{opacity:1}
+body.nav-open{overflow:hidden}
+#side{transition:left .2s ease}
+@media (max-width:860px){
+  #side{left:-280px}
+  #side.open{left:0}
+  .main{margin-left:0}
+  #menuBtn{display:inline-block}
+  #mask.show{display:block}
+}
+body.is-mobile #side{left:-280px}
+body.is-mobile #side.open{left:0}
+body.is-mobile .main{margin-left:0}
+body.is-mobile #menuBtn{display:inline-block}
+body.is-mobile #mask.show{display:block}
+@media (max-width:720px){.grid4{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
+<div class="app">
+  <aside id="side" aria-label="工作台导航">
     <div class="brand">
-      <h1>北京高中班级新媒体工作台</h1>
-      <p>丢一个选题，按年级与平台快速出草稿。纯前端本地生成，任何人打开链接都能用。</p>
+      <div class="seal" aria-hidden="true">班</div>
+      <div>
+        <h1>班级新媒体</h1>
+        <p>北京高中 · 工作台</p>
+      </div>
     </div>
-    <div class="pill">Demo · 班级部</div>
-  </header>
-  <section class="card">
-    <div class="label">年级段</div><div class="chips" id="grades"></div>
-    <div class="label">发布平台</div><div class="chips" id="platforms"></div>
-    <div class="label">模式</div><div class="chips" id="modes"></div>
-    <div class="label">选题 / 粘贴要点</div>
-    <textarea id="topic" placeholder="例如：新高一军训第一周、高二选科家长会复盘、高三一模后班级加油站……"></textarea>
-    <div class="actions">
-      <button class="primary" id="genBtn">生成文章</button>
-      <button class="ghost" id="copyBtn" type="button">复制全文</button>
-      <span class="loading" id="loading"><span class="spinner"></span>正在生成…</span>
-      <span class="hint">约 1 秒出稿 · 示意模板，可再人工润色</span>
-    </div>
-  </section>
-  <section class="card">
-    <div class="empty" id="empty">生成结果会显示在这里。</div>
-    <div id="result" style="display:none"></div>
-  </section>
-  <footer>北京高中班级部新媒体 · 新高一 / 高一 / 高二 / 高三 · 仅草稿，请人工审核后发布</footer>
+    <nav id="nav">
+      <button type="button" class="nav" data-go="chat"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 17 4 20v-4a8 8 0 1 1 2 1z"/></svg><span>新对话</span></button>
+      <button type="button" class="nav" data-go="workshop"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3.5v3M16 3.5v3M4 10h16"/></svg><span>选题工坊</span></button>
+      <button type="button" class="nav" data-go="radar"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="7"/><path d="M12 12 17 7"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/></svg><span>热点雷达</span></button>
+      <button type="button" class="nav" data-go="library"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 5.5h12.5A2.5 2.5 0 0 1 20 8v12H7.5A2.5 2.5 0 0 0 5 17.5z"/><path d="M5 5.5A2.5 2.5 0 0 1 7.5 3H20v17"/></svg><span>知识库</span><span class="badge" id="libN" hidden></span></button>
+      <button type="button" class="nav" data-go="cover"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="m8 15 2.2-2.2L13 15.5l1.6-1.6L18 16"/><circle cx="9" cy="9" r="1"/></svg><span>做配图</span></button>
+      <button type="button" class="nav" data-go="publish"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span>发布中心</span></button>
+      <button type="button" class="nav" data-go="account"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="9" r="3"/><path d="M6.5 19c1.2-2.5 3-3.6 5.5-3.6s4.3 1.1 5.5 3.6"/></svg><span>账号空间</span></button>
+      <button type="button" class="nav" data-go="tools"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M14.5 6.2a3 3 0 0 0-4 3.6L5 15.2 8.8 19l5.4-5.3a3 3 0 0 0 3.5-4.2L15.2 11 13 8.8z"/></svg><span>工具&技能</span></button>
+    </nav>
+    <button type="button" class="foot" data-go="account" id="footBtn">
+      <span class="avatar" id="avatar">班</span>
+      <span><strong id="footName">未填写班级</strong><small id="footMeta">本地账号</small></span>
+    </button>
+  </aside>
+  <button type="button" id="mask" data-act="closemenu" aria-label="关闭导航"></button>
+  <div class="main">
+    <header class="bar">
+      <button type="button" id="menuBtn" data-act="menu">菜单</button>
+      <strong id="crumb">创作台</strong>
+      <span class="grow"></span>
+      <button type="button" id="newBtn" data-act="fresh">新对话</button>
+      <button type="button" class="who" id="who" data-go="account">设置班级</button>
+    </header>
+    <main id="view"></main>
+  </div>
 </div>
-<div class="toast" id="toast">已复制</div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<noscript><p style="padding:24px">请开启 JavaScript。页面本身不需要再联网，但生成和切换模块要在浏览器里运行。</p></noscript>
 <script>
-const GRADES=[
-  {id:'xin',label:'新高一',tone:'入学适应、军训、认识班级、家长期待、新环境第一周'},
-  {id:'g1',label:'高一',tone:'适应节奏、社团招新、第一次家长会、班级文化建设'},
-  {id:'g2',label:'高二',tone:'选科定轨、社团骨干、期中期末、家校沟通加码'},
-  {id:'g3',label:'高三',tone:'一模二模、倒计时、减压加油站、班主任寄语、家校同频'}
+const GRADES = [
+  {id:'xin', label:'新高一', tone:'入学适应、军训、认识班级、家长期待、新环境第一周'},
+  {id:'g1', label:'高一', tone:'适应节奏、社团招新、第一次家长会、班级文化建设'},
+  {id:'g2', label:'高二', tone:'选科定轨、社团骨干、期中期末、家校沟通加码'},
+  {id:'g3', label:'高三', tone:'一模二模、倒计时、减压加油站、班主任寄语、家校同频'}
 ];
-const PLATS=[
-  {id:'xhs',label:'小红书'},{id:'douyin',label:'抖音'},{id:'channels',label:'视频号'},
-  {id:'mp',label:'公众号'},{id:'kuaishou',label:'快手'},{id:'bilibili',label:'B站'}
+const PLATS = [
+  {id:'xhs', label:'小红书'}, {id:'douyin', label:'抖音'}, {id:'channels', label:'视频号'},
+  {id:'mp', label:'公众号'}, {id:'kuaishou', label:'快手'}, {id:'bilibili', label:'B站'}
 ];
-const MODES=[
-  {id:'note',label:'写笔记/成稿'},{id:'find',label:'找选题'},
-  {id:'viral',label:'仿爆款大纲'},{id:'script',label:'口播脚本'}
+const MODES = [
+  {id:'find', label:'找选题'}, {id:'note', label:'写笔记成稿'}, {id:'viral', label:'仿爆款大纲'},
+  {id:'script', label:'口播脚本'}, {id:'cover', label:'做配图'}
 ];
-let grade='g1', platform='mp', mode='note', lastText='';
-function mountChips(el,items,get,set){
-  el.innerHTML='';
-  items.forEach(it=>{
-    const b=document.createElement('button');
-    b.type='button'; b.className='chip'+(get()===it.id?' active':'');
-    b.textContent=it.label;
-    b.onclick=()=>{set(it.id);mountAll();};
-    el.appendChild(b);
+const VIEWS = ['chat','workshop','radar','library','cover','publish','account','tools'];
+const CRUMB = {chat:'创作台', workshop:'选题工坊', radar:'热点雷达', library:'知识库', cover:'做配图', publish:'发布中心', account:'账号空间', tools:'工具&技能'};
+const HINT = {
+  xhs:'小红书适合首句钩子加三段图文',
+  douyin:'抖音适合 15 到 60 秒，字幕用短句',
+  channels:'视频号适合给家长看的三件事',
+  mp:'公众号适合可以留存的小标题',
+  kuaishou:'快手适合真实现场，少摆拍',
+  bilibili:'B站适合稍完整的记录，不做评比'
+};
+const SEEDS = {
+  xin:['报到那天的校园地图','军训第一周的水壶与站姿','记住同桌名字的方式','班主任的第一句班规','宿舍安顿的一张床','给家长的入学第一封说明','班旗还没做好之前'],
+  g1:['社团招新摊位前的30秒','第一次家长会后的走廊','班级公约怎么写才有人听','晨读最整齐的那一分钟','运动会入场式幕后','期中前的班级加油站','同学之间一次具体的互助'],
+  g2:['选科说明会上问得最多的三题','选科确定后的第一周课表','合格考前的安静晚自习','社团骨干交接的一个文件夹','高二家长会少报分多说状态','同伴答疑角','课表变了之后的班级感'],
+  g3:['一模之后不晒分的班级复盘','二模倒计时里的午休','教室后门的加油站便签','班主任一句短而具体的话','志愿沟通怎么开口','成人礼彩排的一个走位','高考周班级值日仍然在']
+};
+const FRAMES = [
+  ['周一','开场','find','用一个开场细节把人留住'],
+  ['周二','现场','note','准备、高潮、收束各一个镜头'],
+  ['周三','原话','script','两位同学各一句原话，按秒写'],
+  ['周四','家校','note','给家长三行可转发说明'],
+  ['周五','反转','viral','预期和实际差一个小细节'],
+  ['周六','回看','note','一张合影背后没拍到的事'],
+  ['周日','预告','find','下周一可以拍的一个镜头']
+];
+const TPLS = [
+  {id:'cal', name:'选题日历', desc:'按年级节点铺一周', mode:'find', topic:'本周班级选题：把一个节点拆成七天可拍的小事', bg:'#f6e0c4'},
+  {id:'cover', name:'封面模板', desc:'主标题加年级副标', mode:'cover', topic:'封面主标题：我们班这一周', bg:'#dcead9'},
+  {id:'note', name:'图文成稿', desc:'可直接润色的笔记', mode:'note', topic:'班级这一周图文成稿', bg:'#f8dccb'},
+  {id:'script', name:'口播脚本', desc:'大约 60 秒分镜', mode:'script', topic:'60秒口播：班级这一周最安静的一秒', bg:'#e3dcf3'}
+];
+const EXAMPLES = ['军训第一周','家长会后的走廊','运动会入场式幕后','一模后班级加油站'];
+const HOTS = [
+  {id:'junxun', title:'军训第一周', months:'8–9月', grades:['xin','g1'], mode:'note', topic:'新高一军训第一周：水壶、站姿和第一句班规', note:'适合拍准备和互助，少拍惩罚式口号。'},
+  {id:'baodao', title:'报到与校园地图', months:'8月底', grades:['xin'], mode:'find', topic:'报到那天的校园地图：从校门到教室', note:'新生和家长都需要，适合清单体。'},
+  {id:'banhui', title:'第一次家长会', months:'9–10月', grades:['xin','g1'], mode:'script', topic:'第一次家长会后的走廊：同学想让家长知道的三件事', note:'适合视频号和公众号，不公开成绩。'},
+  {id:'qizhonghui', title:'期中家长会', months:'学期中段', grades:['g1','g2','g3'], mode:'note', topic:'期中家长会：少报分，多说状态', note:'写沟通方式，不写排名。'},
+  {id:'shetuan', title:'社团招新', months:'9月', grades:['g1','g2'], mode:'viral', topic:'社团招新摊位前的30秒', note:'可以热闹，但不要替社团做商业宣传。'},
+  {id:'yundong', title:'运动会', months:'秋或春', grades:['xin','g1','g2','g3'], mode:'script', topic:'运动会入场式幕后', note:'入场、后勤、没上场的同学，都是选题。'},
+  {id:'xuanke', title:'选科说明', months:'高一末到高二上', grades:['g1','g2'], mode:'note', topic:'选科说明会上家长问得最多的三题', note:'只整理问题和沟通方式，不给保分建议。'},
+  {id:'xuekao', title:'合格考周', months:'高二', grades:['g2'], mode:'script', topic:'合格考前的安静晚自习', note:'减压记录，不渲染焦虑，不泄题。'},
+  {id:'yimo', title:'一模复盘', months:'高三·约春季', grades:['g3'], mode:'note', topic:'一模之后不晒分的班级复盘', note:'各区时间不同。写方法和互助，不写分数。'},
+  {id:'ermo', title:'二模倒计时', months:'高三·约春夏', grades:['g3'], mode:'script', topic:'二模倒计时里的午休', note:'生活细节比口号更能让人喘口气。'},
+  {id:'qimo', title:'期末前一周', months:'1月 / 6月', grades:['xin','g1','g2'], mode:'note', topic:'期末前一周：教室后门的便签', note:'高三请改用加油站口径，避免制造焦虑。'},
+  {id:'biye', title:'毕业周值日', months:'6月', grades:['g3'], mode:'note', topic:'高考周班级值日仍然在', note:'留档向。不直播考场，不传播小道消息。'}
+];
+const CHECKS = [
+  ['review','班主任或负责老师已人工看过'],
+  ['sensitive','没有成绩排名、身份证号、学号、电话、家庭住址'],
+  ['consent','出镜同学已获本人及家长同意，或已改为背影、打码'],
+  ['facts','时间、地点、集合要求与班主任通知一致'],
+  ['nocommerce','没有带货、外链导流，也没有写成已经发布到平台'],
+  ['assets','配图没有他人水印，没有未授权素材'],
+  ['claims','标题和标签没有保分、内部名额等夸张承诺']
+];
+const PRESETS = [
+  {id:'preset-hook', title:'选题钩子', text:'第一句写现场细节，不要写「大家好」。例如：军训那天全班最安静的一秒，出现在水壶放下的时候。'},
+  {id:'preset-multi', title:'一稿多发', text:'事实只写一份：时间、地点、谁做了什么。小红书压成三段，公众号加小标题，短视频按秒写画面。不改事实。'},
+  {id:'preset-privacy', title:'隐私底线', text:'不写成绩排名，不拍证件和手机屏幕，露脸需本人和家长同意。集合地点以班主任通知为准。'},
+  {id:'preset-voice', title:'班刊口吻', text:'具体、温暖，像班刊。少鸡汤，不对比学生，不导流，不带货。'}
+];
+const TOOLS = [
+  {id:'hook', title:'选题钩子', points:['第一句写现场，不写「大家好，今天给大家分享」。','用一个反常细节：安静、失误、互助、没拍到的十秒。','标题里出现年级和具体的事，避免「震惊」「必看」。','先问这条是给同学、给家长，还是给以后的自己留档。']},
+  {id:'multi', title:'一稿多发', points:['同一事实，不改事实，只改容器。','小红书：首句钩子，三段，再加标签。','公众号：小标题、可转发清单、文末注明审核。','抖音、快手、视频号、B站：按秒写画面和字幕。','发布中心会按平台各出一版，仍要逐条改人称和长度。']},
+  {id:'norms', title:'平台文案规范', points:['小红书：像笔记，少广告腔，标签贴切。','抖音：字幕短，第一帧能看懂。','视频号：给家长看三件事，称呼克制。','公众号：标题不标题党，文末写明请老师审核。','快手：口语可以，事实不能夸。','B站：可以稍长，开头说明这是班级记录，不是评比。','都不要带货、外链导流，也不要写成已经发布。']},
+  {id:'poster', title:'封面三秒', points:['3:4 竖版，主标题尽量两行内读完。','年级、班级、事情，三样至少出现两样。','不放分数、排名、证件、未授权特写。','用年级底色，平台只做一条色带，不搬其他产品的标志。']},
+  {id:'home', title:'家校沟通语气', points:['家长看的内容写时间、地点、要配合什么，并以班主任通知为准。','少用「最强」「顶级」「逆袭」。','情绪落在「我们是一个班」，不落在单个学生的优劣。','需要转发时，给三行清单，不写长演讲。']},
+  {id:'privacy', title:'敏感信息核对', points:['不写完整姓名加成绩，不公开排名。','学号、身份证、准考证、家庭住址、电话不入镜。','出镜要本人和家长同意，不同意就拍背影、手、班旗。','校外集合地点先问班主任能不能公开。']},
+  {id:'script', title:'口播节奏', points:['0 到 3 秒必须出现具体的事。','大约每 8 到 12 秒一个新信息。','同学原话比形容词有用。','结尾一个轻问题，不求关注，不抽奖。']},
+  {id:'assets', title:'班级素材收集', points:['按日期和事件收照片，注明能不能露脸。','投稿格式：一张图，加一句话，加是否同意出镜。','新媒体组整理，老师发布前再看一遍。','别人的照片不直接转到公开平台。']}
+];
+const DEFAULT_PROFILE = {className:'', grade:'g1', platforms:['mp'], voice:'具体、温暖，像班刊。少鸡汤，不晒成绩，不导流。'};
+const FONT = '"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC","WenQuanYi Micro Hei","Droid Sans Fallback",sans-serif';
+const WASH = {xin:'#f4d7b0', g1:'#d5e7cf', g2:'#d5e4f4', g3:'#e6d8f0'};
+const STRIPE = {xhs:'#e85d4c', douyin:'#2a241c', channels:'#3d8f62', mp:'#5d6e91', kuaishou:'#e0703a', bilibili:'#d46a92'};
+const state = {
+  view:'chat', grade:'g1', platform:'mp', mode:'note', topic:'', article:null, busy:false,
+  profile:null, draftProfile:null, drafts:[], snips:[], checks:{}, q:'', libTab:'drafts',
+  wGrade:'g1', wPlat:'mp', theme:'', weekTouched:false, plan:null, radar:'all', cover:null
+};
+let genToken = 0;
+let toastTimer = 0;
+let suppressHash = false;
+
+function h(tag, attrs, kids) {
+  const n = document.createElement(tag);
+  attrs = attrs || {};
+  Object.keys(attrs).forEach(k => {
+    const v = attrs[k];
+    if (v == null || v === false) return;
+    if (k === 'class') n.className = v;
+    else if (k === 'text') n.textContent = v;
+    else if (k === 'value') n.value = v;
+    else n.setAttribute(k, v === true ? '' : String(v));
   });
+  const list = Array.isArray(kids) ? kids : (kids == null ? [] : [kids]);
+  list.forEach(kid => {
+    if (kid == null || kid === false) return;
+    n.appendChild(kid.nodeType ? kid : document.createTextNode(String(kid)));
+  });
+  return n;
 }
-function mountAll(){
-  mountChips(document.getElementById('grades'),GRADES,()=>grade,v=>grade=v);
-  mountChips(document.getElementById('platforms'),PLATS,()=>platform,v=>platform=v);
-  mountChips(document.getElementById('modes'),MODES,()=>mode,v=>mode=v);
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
-mountAll();
-const gLabel=()=>GRADES.find(g=>g.id===grade).label;
-const gTone=()=>GRADES.find(g=>g.id===grade).tone;
-const pLabel=()=>PLATS.find(p=>p.id===platform).label;
-function buildArticle(topic){
-  const k=(topic||'').trim()||'班级日常';
-  const g=gLabel(), tone=gTone(), p=pLabel();
-  const tagK=k.replace(/\s+/g,'');
-  if(mode==='find'){
-    return {title:p+' · '+g+' · 「'+k+'」选题方向', body:[
-      '年级焦点：'+tone,'',
-      '① 现场切片：把「'+k+'」拆成准备 / 高潮 / 收束三个可拍镜头。',
-      '② 同学原话：采访两位'+g+'同学，问「最难忘的 10 秒」。',
-      '③ 班主任视角：一条短寄语 + 一张合影说明。',
-      '④ 清单体：家长看完就能转发的「'+g+'·'+k+'注意事项」。',
-      '⑤ 对比体：入学前 vs 现在，或紧张 vs 放松，突出'+g+'成长。',
-      '⑥ 轻互动：评论区征集下一期想看的瞬间。'
-    ].join('\n'), tags:'#北京高中 #'+g+' #班级新媒体 #'+tagK+' #校园生活',
-      cover:'主标题「'+k+'」+ 副标「'+g+'·X班」；竖版大字，避免成绩数字'};
+function clip(s, n) { return Array.from(String(s || '')).slice(0, n).join(''); }
+function clone(o) { return JSON.parse(JSON.stringify(o)); }
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+function gradeName(id) { const g = GRADES.find(x => x.id === id); return g ? g.label : '高一'; }
+function platName(id) { const p = PLATS.find(x => x.id === id); return p ? p.label : '公众号'; }
+function modeName(id) { const m = MODES.find(x => x.id === id); return m ? m.label : '写笔记成稿'; }
+function classLabel() { return ((state.profile && state.profile.className) || '').trim() || 'X班'; }
+function known(list, id) { return list.some(x => x.id === id); }
+function localGet(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (raw == null) return fallback;
+    return JSON.parse(raw);
+  } catch (e) { return fallback; }
+}
+function localSet(key, value) {
+  try { localStorage.setItem(key, JSON.stringify(value)); }
+  catch (e) { toast('这台浏览器无法保存，本次仍可使用'); }
+}
+function loadProfile() {
+  const saved = localGet('bjcm-profile-v1', {}) || {};
+  const p = Object.assign({}, DEFAULT_PROFILE, saved);
+  if (!Array.isArray(p.platforms)) p.platforms = ['mp'];
+  p.platforms = p.platforms.filter(id => known(PLATS, id));
+  if (!p.platforms.length) p.platforms = ['mp'];
+  if (!known(GRADES, p.grade)) p.grade = 'g1';
+  p.className = String(p.className || '').slice(0, 24);
+  p.voice = typeof saved.voice === 'string' ? saved.voice.slice(0, 240) : DEFAULT_PROFILE.voice;
+  return p;
+}
+function loadDrafts() {
+  const arr = localGet('bjcm-drafts-v1', []);
+  return Array.isArray(arr) ? arr.filter(d => d && d.id && d.title && d.body).slice(0, 40) : [];
+}
+function loadSnips() {
+  const stored = localGet('bjcm-snips-v1', null);
+  if (stored == null) {
+    const seed = PRESETS.map(s => Object.assign({at:0, preset:true}, s));
+    localSet('bjcm-snips-v1', seed);
+    return seed;
   }
-  if(mode==='viral'){
-    return {title:'仿爆款结构 · '+g+'「'+k+'」大纲', body:[
-      '结构：强钩子 → 冲突/悬念 → 过程反转 → 情绪落点 → 轻 CTA',
-      '年级焦点：'+tone,'',
-      '钩子（0–3s/首屏）：「'+g+k+'那天，全班最安静的一秒出现在……」',
-      '冲突：预期是热闹，实际最打动人的是一个很小的互助细节。',
+  return Array.isArray(stored) ? stored.filter(s => s && s.id) : [];
+}
+function defaultCover() {
+  const grade = state.profile.grade || 'g1';
+  const plat = (state.profile.platforms && state.profile.platforms[0]) || 'mp';
+  const name = (state.profile.className || '').trim() || 'X班';
+  return {title:'班级这一周', sub: gradeName(grade) + ' · ' + name + ' · ' + platName(plat), grade: grade, platform: plat, badge:'班级记录'};
+}
+function persistSession() {
+  try {
+    sessionStorage.setItem('bjcm-session-v1', JSON.stringify({
+      grade: state.grade, platform: state.platform, mode: state.mode, topic: state.topic,
+      article: state.article, cover: state.cover, wGrade: state.wGrade, wPlat: state.wPlat,
+      theme: state.theme, weekTouched: state.weekTouched, plan: state.plan, radar: state.radar
+    }));
+  } catch (e) {}
+}
+function restoreSession() {
+  let data = null;
+  try { data = JSON.parse(sessionStorage.getItem('bjcm-session-v1') || 'null'); } catch (e) { data = null; }
+  if (!data || typeof data !== 'object') return;
+  if (known(GRADES, data.grade)) state.grade = data.grade;
+  if (known(PLATS, data.platform)) state.platform = data.platform;
+  if (known(MODES, data.mode)) state.mode = data.mode;
+  if (typeof data.topic === 'string') state.topic = data.topic.slice(0, 600);
+  if (data.article && typeof data.article.title === 'string' && typeof data.article.body === 'string') state.article = data.article;
+  if (data.cover && typeof data.cover === 'object') {
+    state.cover = Object.assign(defaultCover(), data.cover);
+    if (!known(GRADES, state.cover.grade)) state.cover.grade = 'g1';
+    if (!known(PLATS, state.cover.platform)) state.cover.platform = 'mp';
+  }
+  if (known(GRADES, data.wGrade)) state.wGrade = data.wGrade;
+  if (known(PLATS, data.wPlat)) state.wPlat = data.wPlat;
+  if (typeof data.theme === 'string') state.theme = data.theme.slice(0, 40);
+  state.weekTouched = !!data.weekTouched;
+  if (data.plan && Array.isArray(data.plan.days) && data.plan.days.length === 7) state.plan = data.plan;
+  if (data.radar === 'all' || known(GRADES, data.radar)) state.radar = data.radar;
+}
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('on');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('on'), 1700);
+}
+function copyText(text, ok) {
+  if (!text) { toast('没有可复制的内容'); return; }
+  const done = () => toast(ok || '已复制');
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+  } else fallbackCopy(text, done);
+}
+function fallbackCopy(text, done) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.setAttribute('readonly', '');
+  ta.style.position = 'fixed';
+  ta.style.left = '-9999px';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); done(); }
+  catch (e) { toast('复制失败，请手动选择文本'); }
+  ta.remove();
+}
+function plain(a) { return a.title + '\n\n' + a.body + '\n\n话题标签：' + a.tags + '\n封面文案：' + a.cover; }
+function fmt(ts) {
+  if (!ts) return '示例';
+  const d = new Date(ts);
+  const p = n => String(n).padStart(2, '0');
+  return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+}
+function detailFor(topic) {
+  const options = [
+    '把「' + topic + '」里最容易被忽略的准备动作写清楚',
+    '采访两位同学：关于「' + topic + '」，最难忘的 10 秒是什么',
+    '用一张合影说明「' + topic + '」，正文只写合影之外的那句话',
+    '给家长三行：时间、集合点、需要配合什么（以班主任通知为准）'
+  ];
+  let n = 0;
+  for (const ch of topic) n = (n + ch.codePointAt(0)) % options.length;
+  return options[n];
+}
+function voiceLine(ctx) {
+  if (/幽默|轻松|俏皮/.test(ctx.voice)) return '用词可以轻一点，但事实不夸大，不拿同学开玩笑。';
+  if (/庄重|正式|克制/.test(ctx.voice)) return '用词克制，像给家长会准备的书面记录。';
+  return '像班刊：具体、温暖，不鸡汤。';
+}
+function tagsFor(ctx, extra) {
+  const base = clip(String(ctx.topic).replace(/\s+/g, ''), 16) || '班级日常';
+  const map = {
+    xhs:['#高中生真实记录','#校园日常'], douyin:['#校园短视频','#班级记录'],
+    channels:['#家校沟通','#班级动态'], mp:['#班级观察','#校园'],
+    kuaishou:['#真实现场','#校园生活'], bilibili:['#校园记录','#班级vlog']
+  };
+  return ['#北京高中', '#' + ctx.grade.label, '#' + base, '#班级新媒体'].concat(extra || [], map[ctx.plat.id] || []).join(' ');
+}
+function opening(ctx) {
+  const k = ctx.topic, g = ctx.grade.label, c = ctx.cls;
+  const light = /幽默|轻松|俏皮/.test(ctx.voice);
+  const formal = /庄重|正式|克制/.test(ctx.voice);
+  if (ctx.plat.id === 'xhs') {
+    if (light) return c + '的「' + k + '」，先说一个有点好笑、但挺真的细节。';
+    if (formal) return c + '记录｜' + g + '「' + k + '」。下面只写现场。';
+    return '今天把' + c + '的「' + k + '」记下来，留给以后的我们。';
+  }
+  if (ctx.plat.id === 'douyin') return light ? '先别划。' + c + '「' + k + '」里，有个细节全班都笑了。' : '别划走——' + g + '关于「' + k + '」，' + c + '都在等这一段。';
+  if (ctx.plat.id === 'channels') return '家长们好。这里是' + c + '新媒体。这一期只说' + g + '「' + k + '」里最值得看的三件事。';
+  if (ctx.plat.id === 'kuaishou') return '真现场！' + c + '「' + k + '」那天，先记住一个平时没人特写的动作。';
+  if (ctx.plat.id === 'bilibili') return '一期记录向：' + c + '如何把「' + k + '」留成可以回看的班级档案。';
+  return '【' + g + '班级观察】「' + k + '」：把热闹写成可留存的班级记忆。';
+}
+function artNote(ctx) {
+  const k = ctx.topic, g = ctx.grade.label, c = ctx.cls, d = ctx.detail, tone = ctx.tone;
+  const open = opening(ctx);
+  const tail = voiceLine(ctx);
+  let title, body;
+  if (ctx.plat.id === 'mp') {
+    title = g + '｜' + k + '｜' + c + '这一周';
+    body = [open, '', '一、写在前面', g + '这一阶段的关键词是：' + tone + '。围绕「' + k + '」，' + c + '不想写空泛的鸡汤，只想把看得见的细节留下来——声音、动作、一句原话。', '', '二、现场三件事', '1. 准备：' + d + '。', '2. 高潮：一人卡壳、全班托住的瞬间，这才是「我们是一个班」。', '3. 收束：班主任或同学的一句原话，比口号更耐读。', '', '三、给家长的可转发清单', '- 可以跟孩子聊的一个问题：你最想被写进下一期的瞬间是什么？', '- 需要配合的事项：肖像授权、不公开成绩排名。时间与集合点以班主任通知为准。', '', '四、下期预告', '欢迎同学投稿照片、短视频或一句话。新媒体组整理后，由老师审核再发。', '', tail].join('\n');
+  } else if (ctx.plat.id === 'xhs') {
+    title = g + '·' + k + '真实记录｜' + c;
+    body = [open, '', '先说结论：' + c + '的「' + k + '」，最打动人的通常不是热闹本身，而是几个很小的互助细节。', '', '❶ 开场：一个声音、一个动作，或一句原话。可写：' + d + '。', '❷ 过程：准备、高潮、收束，三段各留一张图。', '❸ 落点：少鸡汤，多真实。情绪落在集体，不落在炫耀。', '', '年级语境：' + tone, tail, '', '互动：你最想被写进下一期的瞬间是什么？评论区留一句就好。', '发布前：不晒分、不露证件，出镜要征得同意。'].join('\n');
+  } else if (ctx.plat.id === 'douyin') {
+    title = g + '·' + k + '｜别划走的 30 秒';
+    body = ['【字幕】停一下', open, '', '【画面】竖屏。第一帧大字写「' + k + '」，不要用成绩截图。', '【0–3秒】钩子就这句。班级：' + c + '。', '【3–20秒】三段现场：准备、高潮、收束。可拍的细节：' + d, '【20–28秒】同学原话一句，字幕打出来。', '【结尾】评论区问：你最想看哪一段？不求关注，不抽奖。', '', '年级语境：' + tone, tail].join('\n');
+  } else if (ctx.plat.id === 'channels') {
+    title = c + '：' + k + '里值得看的三件事';
+    body = [open, '', '1. ' + d, '2. 高潮是一次具体的互助，不是排名。', '3. 班主任或同学的一句原话。', '', '年级语境：' + tone, '适合转发给家长。时间、地点以班主任通知为准。', tail].join('\n');
+  } else if (ctx.plat.id === 'kuaishou') {
+    title = '真现场｜' + g + '·' + k;
+    body = [open, '', '班级：' + c + ' · ' + g, d, '少摆拍。准备、高潮、收束各留一个镜头。', '收在一句原话上，不收在口号上。', '', '年级语境：' + tone, tail].join('\n');
+  } else {
+    title = '【班级记录】' + g + '｜' + k;
+    body = [open, '', '开头先说清楚：这是班级记录，不是评比，不晒分。', '时间轴建议：', '00:00 一个具体细节当钩子', '00:15 背景：' + tone, '00:40 现场。' + d, '01:20 同学原话', '01:50 下期想征集什么素材', '', '班级：' + c, tail, '可以在评论区提问，不引导刷礼物。'].join('\n');
+  }
+  return {title:title, body:body, tags:tagsFor(ctx), cover:'封面文案：「' + k + '」· ' + g + '；副行「' + c + ' · 现场感」', coverTitle:clip(k, 18)};
+}
+function artFind(ctx) {
+  const k = ctx.topic, g = ctx.grade.label;
+  const ideas = [
+    '现场切片：把「' + k + '」拆成准备、高潮、收束三个可拍镜头。',
+    '同学原话：采访两位' + g + '同学，问最难忘的 10 秒。',
+    '班主任视角：一条短寄语，配一张合影说明，不写排名。',
+    '清单体：家长看完就能转发的「' + g + '·' + k + '」注意事项。',
+    '对比体：紧张和放松，或入学前和现在，突出' + g + '的变化。',
+    '轻互动：评论区征集下一期想看的瞬间，不抽奖、不导流。'
+  ];
+  return {
+    title: ctx.plat.label + ' · ' + g + ' · 「' + k + '」选题方向',
+    coverTitle: clip(k, 18),
+    body: ['班级：' + ctx.cls, '年级焦点：' + ctx.tone, '平台建议：' + (HINT[ctx.plat.id] || ''), '这一题可以抓住的细节：' + ctx.detail, '', ideas.map((t,i) => '①②③④⑤⑥'[i] + ' ' + t).join('\n'), '', voiceLine(ctx)].join('\n'),
+    tags: tagsFor(ctx),
+    cover: '主标题「' + k + '」+ 副标「' + g + '·' + ctx.cls + '」；竖版大字，避免成绩数字'
+  };
+}
+function artViral(ctx) {
+  const k = ctx.topic, g = ctx.grade.label;
+  return {
+    title: '仿爆款结构 · ' + g + '「' + k + '」大纲',
+    coverTitle: clip(k, 18),
+    body: [
+      '班级：' + ctx.cls,
+      '只借结构，不复制别人的原文，不伪造点赞和热度。',
+      '结构：强钩子 → 冲突或悬念 → 过程 → 情绪落点 → 轻互动',
+      '年级焦点：' + ctx.tone,
+      '平台呈现：' + (HINT[ctx.plat.id] || ''),
+      '可嵌入的细节：' + ctx.detail,
+      '',
+      '钩子（0–3秒 / 首屏）：「' + g + k + '那天，全班最安静的一秒出现在……」',
+      '冲突：预期是热闹，实际最打动人的是一个很小的互助。',
       '过程：三段推进，中间插入一句同学原话。',
       '落点：情绪落在「我们是一个班」，不是个人炫耀。',
-      'CTA：邀请'+g+'同学投稿下一期「'+k+'」素材；不导流、不带货。'
-    ].join('\n'), tags:'#仿写结构 #'+g+' #班级内容 #'+tagK+' #北京校园',
-      cover:'大字钩子 + 小字「'+g+'真实向」；避免夸张承诺与排名'};
-  }
-  if(mode==='script'){
-    return {title:'口播脚本 · '+p+' · '+g+'「'+k+'」', body:[
-      '【0–2s 钩子】停一下——'+g+'关于'+k+'，有个细节几乎没人拍到。',
-      '【2–8s 交代】我是'+g+'·X班新媒体组。今天只讲三件事。',
-      '【语境】'+tone,
-      '【8–25s 主体1】现场：准备阶段最容易被忽略的动作。',
-      '【25–45s 主体2】高潮：一人失误、全班托住的瞬间。',
-      '【45–55s 主体3】收束：班主任或同学一句原话。',
-      '【55–60s CTA】下期想看哪段？评论区扣 1/2/3。',
-      '【画面】竖屏大字幕；避免成绩与隐私特写。'
-    ].join('\n'), tags:'#口播 #'+g+' #班级短视频 #'+tagK+' #北京高中',
-      cover:'封面：班旗或现场特写 + 「'+g+'·'+k+'·60秒」'};
-  }
-  const openings={
-    xhs:'今天把'+g+'的「'+k+'」完整记下来，留给以后的我们。',
-    douyin:'别划走——'+g+'关于「'+k+'」，全班都在等这一段。',
-    channels:'家长们好。这一期只说'+g+'「'+k+'」里最值得看的三件事。',
-    mp:'【'+g+'班级观察】「'+k+'」：把热闹写成可留存的班级记忆。',
-    kuaishou:'真现场！'+g+'「'+k+'」那天，班旗一举全场都安静了。',
-    bilibili:'一期正经一点的'+g+'向：我们如何把「'+k+'」拍成能反复回看的记录。'
+      '收束：邀请同学投稿下一期「' + k + '」的素材。不导流、不带货、不抽奖。',
+      '',
+      '不建议：晒排名、保分承诺、拿同学对比、用未授权的热门视频原片。',
+      voiceLine(ctx)
+    ].join('\n'),
+    tags: tagsFor(ctx, ['#仿写结构','#班级内容']),
+    cover: '大字钩子 + 小字「' + g + '真实向」；避免夸张承诺与排名'
   };
-  const title=platform==='mp'?(g+'｜'+k+'｜北京高中班级这一周'):platform==='xhs'?(g+'·'+k+'真实记录｜现场感拉满'):(g+'·'+k+'｜班级新媒体示例稿');
-  let paras;
-  if(platform==='mp'){
-    paras=[openings.mp,'','一、写在前面',
-      g+'这一阶段的关键词是：'+tone+'。围绕「'+k+'」，我们不想写空泛的鸡汤，只想把看得见的细节留下来——声音、动作、一句原话，以及班里真正同频的那几秒。',
-      '','二、现场三件事',
-      '1. 准备：开场前最容易被忽略的动作与秩序感。',
-      '2. 高潮：一人失误、全班托住的瞬间——这才是「我们是一个班」。',
-      '3. 收束：班主任或同学的一句原话，比口号更耐读。',
-      '','三、给家长的可转发清单',
-      '- 看完这篇，建议跟孩子聊的一个小问题：你最想被拍进下一期的瞬间是什么？',
-      '- 需要配合的事项：肖像授权、避免公开成绩排名、活动时间与集合点以班主任通知为准。',
-      '','四、下期预告',
-      '下期继续记录'+g+'的日常与节点。欢迎同学投稿素材（照片/短视频/一句话），新媒体组统一整理后发布。',
-      '','（本文为班级新媒体工作台草稿，发布前请班主任审核。）'];
-  } else if(platform==='xhs'){
-    paras=[openings.xhs,'','先说结论：'+g+'的「'+k+'」，最打动人的不是热闹本身，而是几个很小的互助细节。','',
-      '❶ 开场细节：一个声音 / 一个动作 / 一句原话，把你拉进现场。',
-      '❷ 过程：准备 → 高潮 → 收束，三段各配一张图。',
-      '❸ 落点：少鸡汤，多真实；情绪落在集体，不落在炫耀。','','年级语境：'+tone,'',
-      '互动：你最想被拍进下一期的瞬间是什么？评论区告诉我。'];
-  } else {
-    paras=[openings[platform]||openings.channels,'','年级语境：'+tone,'',
-      '一、开场：用一个细节把读者拉进「'+k+'」。',
-      '二、过程：准备、高潮、收束三段，每段一个镜头。',
-      '三、收束：点出'+g+'班级共识（互助 / 仪式感 / 家校同频）。',
-      '四、互动：评论区抛轻问题——你最想看哪段？'];
+}
+function artScript(ctx) {
+  const k = ctx.topic, g = ctx.grade.label;
+  let length = '短视频建议 45–60 秒，第一句就要出现具体的事。';
+  if (ctx.plat.id === 'bilibili') length = 'B站可以把同样三件事拉到 90 秒，顺序不变。';
+  if (ctx.plat.id === 'mp') length = '若改成公众号，把每段口播扩成一个小标题即可。';
+  if (ctx.plat.id === 'channels') length = '视频号建议控制在 60 秒内，称呼家长要克制。';
+  if (ctx.plat.id === 'xhs') length = '若改成图文，把每一秒的句子变成一行配图说明。';
+  return {
+    title: '口播脚本 · ' + ctx.plat.label + ' · ' + g + '「' + k + '」',
+    coverTitle: clip(g + '·' + k, 18),
+    body: [
+      '【0–2秒 钩子】停一下——' + g + '关于' + k + '，有个细节几乎没人拍到。',
+      '【2–8秒 交代】我是' + ctx.cls + '新媒体。今天只讲三件事。',
+      '【语境】' + ctx.tone,
+      '【8–25秒 主体1】现场：' + ctx.detail,
+      '【25–45秒 主体2】高潮：一人卡壳、全班托住的瞬间。',
+      '【45–55秒 主体3】收束：班主任或同学一句原话。',
+      '【55–60秒 互动】下期想看哪段？评论区留一句。不求关注。',
+      '【画面】竖屏大字幕；不拍成绩、证件和未授权特写。',
+      length,
+      voiceLine(ctx)
+    ].join('\n'),
+    tags: tagsFor(ctx, ['#口播','#班级短视频']),
+    cover: '封面：「' + k + '」· ' + g + ' · ' + ctx.cls + '；可写「60秒」'
+  };
+}
+function artCover(ctx) {
+  const k = clip(ctx.topic, 18);
+  const sub = ctx.grade.label + ' · ' + ctx.cls + ' · ' + ctx.plat.label;
+  return {
+    title: '封面方案 · ' + ctx.grade.label + '「' + k + '」',
+    coverTitle: k,
+    body: [
+      '主标题：' + k,
+      '副标题：' + sub,
+      '角标：班级记录',
+      '版式：3:4 竖版，1080×1440。上半是年级色块，下半放大字。',
+      '颜色：平台只做顶部一条色带，不使用其他产品的标志或水印。',
+      '这一稿想留住的细节：' + ctx.detail,
+      '不要出现：成绩、排名、证件、电话、未授权的人脸特写。',
+      '年级语境：' + ctx.tone,
+      voiceLine(ctx)
+    ].join('\n'),
+    tags: tagsFor(ctx),
+    cover: '「' + k + '」· ' + sub
+  };
+}
+function buildArticle(o) {
+  const topic = (o.topic || '').trim() || '班级日常';
+  const grade = GRADES.find(g => g.id === o.grade) || GRADES[1];
+  const plat = PLATS.find(p => p.id === o.platform) || PLATS[3];
+  const mode = known(MODES, o.mode) ? o.mode : 'note';
+  const profile = o.profile || DEFAULT_PROFILE;
+  const ctx = {
+    topic: topic, grade: grade, plat: plat, mode: mode,
+    cls: (profile.className || '').trim() || 'X班',
+    voice: (profile.voice || '').trim(),
+    tone: grade.tone,
+    detail: detailFor(topic)
+  };
+  let art = mode === 'find' ? artFind(ctx) : mode === 'viral' ? artViral(ctx) : mode === 'script' ? artScript(ctx) : mode === 'cover' ? artCover(ctx) : artNote(ctx);
+  art.body += '\n\n——\n草稿 · ' + ctx.cls + ' · ' + grade.label + ' · 发布前请班主任或负责老师审核。\n工作台不会登录，也不会替你发布到小红书、抖音、视频号、公众号、快手或 B站。';
+  if (ctx.voice) art.body += '\n口吻备注（发布时可删）：' + ctx.voice;
+  art.topic = topic;
+  art.grade = grade.id;
+  art.platform = plat.id;
+  art.mode = mode;
+  art.coverTitle = art.coverTitle || clip(topic, 18);
+  return art;
+}
+function weekPlan(gradeId, platformId, theme) {
+  const seeds = SEEDS[gradeId] || SEEDS.g1;
+  const hint = HINT[platformId] || '';
+  const themeBit = (theme || '').trim();
+  return FRAMES.map((f, i) => {
+    const seed = seeds[i];
+    return {
+      day: f[0], slot: f[1], mode: f[2],
+      title: themeBit ? themeBit + ' · ' + seed : seed,
+      angle: f[3] + '。' + hint,
+      topic: themeBit ? themeBit + '（' + f[0] + '：' + seed + '）' : seed + '（' + f[0] + '·' + f[1] + '）'
+    };
+  });
+}
+function roundRect(ctx, x, y, w, h, r) {
+  const radius = Math.min(r, w / 2, h / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.arcTo(x + w, y, x + w, y + h, radius);
+  ctx.arcTo(x + w, y + h, x, y + h, radius);
+  ctx.arcTo(x, y + h, x, y, radius);
+  ctx.arcTo(x, y, x + w, y, radius);
+  ctx.closePath();
+}
+function wrapText(ctx, text, max) {
+  const chars = Array.from(text || '');
+  if (!chars.length) return [''];
+  const lines = [];
+  let line = '';
+  chars.forEach(ch => {
+    const next = line + ch;
+    if (line && ctx.measureText(next).width > max) { lines.push(line); line = ch; }
+    else line = next;
+  });
+  if (line) lines.push(line);
+  return lines;
+}
+function paint(canvas) {
+  const W = 1080, H = 1440;
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  const grade = known(GRADES, state.cover.grade) ? state.cover.grade : 'g1';
+  const plat = known(PLATS, state.cover.platform) ? state.cover.platform : 'mp';
+  const title = (state.cover.title || '').trim() || '班级这一周';
+  const sub = (state.cover.sub || '').trim();
+  const badge = clip((state.cover.badge || '').trim() || '班级记录', 8);
+  ctx.fillStyle = '#fbf6ef';
+  ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = WASH[grade] || WASH.g1;
+  ctx.fillRect(0, 0, W, 820);
+  ctx.fillStyle = 'rgba(255,250,244,.35)';
+  ctx.beginPath();
+  ctx.arc(900, 180, 180, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = STRIPE[plat] || '#c2410c';
+  ctx.fillRect(0, 0, W, 32);
+  ctx.font = '600 32px ' + FONT;
+  const bw = Math.ceil(ctx.measureText(badge).width + 56);
+  roundRect(ctx, 80, 88, bw, 60, 30);
+  ctx.fillStyle = '#2a241c';
+  ctx.fill();
+  ctx.fillStyle = '#fffaf4';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(badge, 108, 118);
+  ctx.textBaseline = 'alphabetic';
+  ctx.fillStyle = '#2a241c';
+  ctx.font = '600 40px ' + FONT;
+  ctx.fillText(gradeName(grade) + '  ·  ' + platName(plat), 80, 230);
+  const n = Array.from(title).length;
+  const size = n <= 8 ? 76 : n <= 14 ? 64 : 52;
+  ctx.font = '700 ' + size + 'px ' + FONT;
+  const all = wrapText(ctx, title, W - 160);
+  const lines = all.slice(0, 3);
+  if (all.length > 3 && lines[2]) lines[2] = clip(lines[2], Math.max(1, Array.from(lines[2]).length - 1)) + '…';
+  let y = lines.length === 1 ? 1040 : 960;
+  lines.forEach(ln => { ctx.fillText(ln, 80, y); y += size + 18; });
+  ctx.fillStyle = '#5c5348';
+  ctx.font = '500 34px ' + FONT;
+  y += 12;
+  wrapText(ctx, sub, W - 160).slice(0, 2).forEach(ln => { ctx.fillText(ln, 80, y); y += 48; });
+  ctx.fillStyle = STRIPE[plat] || '#c2410c';
+  ctx.fillRect(80, H - 120, 84, 8);
+  ctx.fillStyle = '#6e655c';
+  ctx.font = '500 28px ' + FONT;
+  ctx.fillText('北京高中 · 班级新媒体', 80, H - 64);
+}
+function drawAll() { document.querySelectorAll('canvas.cover-canvas').forEach(paint); }
+function fillCoverFrom(a) {
+  state.cover.title = clip(a.coverTitle || a.topic || '班级这一周', 24);
+  state.cover.sub = gradeName(a.grade) + ' · ' + classLabel() + ' · ' + platName(a.platform);
+  state.cover.grade = known(GRADES, a.grade) ? a.grade : state.grade;
+  state.cover.platform = known(PLATS, a.platform) ? a.platform : state.platform;
+  if (!state.cover.badge) state.cover.badge = '班级记录';
+}
+function chipHTML(items, current, choice) {
+  return '<div class="chips" role="group">' + items.map(it => {
+    const on = it.id === current;
+    return '<button type="button" class="chip' + (on ? ' active' : '') + '" data-choice="' + choice + '" data-id="' + it.id + '" aria-pressed="' + (on ? 'true' : 'false') + '">' + esc(it.label) + '</button>';
+  }).join('') + '</div>';
+}
+function chipMulti(items, selected, choice) {
+  return '<div class="chips" role="group">' + items.map(it => {
+    const on = selected.indexOf(it.id) >= 0;
+    return '<button type="button" class="chip' + (on ? ' active' : '') + '" data-choice="' + choice + '" data-id="' + it.id + '" aria-pressed="' + (on ? 'true' : 'false') + '">' + esc(it.label) + '</button>';
+  }).join('') + '</div>';
+}
+function footHTML() {
+  return '<p class="foot-note">北京高中班级部新媒体 · 新高一 / 高一 / 高二 / 高三 · 仅草稿，请人工审核后发布</p>';
+}
+function articleNode(a) {
+  const wrap = h('article', {class:'result', id:'result', tabindex:'-1'});
+  const meta = h('div', {class:'meta'});
+  [gradeName(a.grade), platName(a.platform), modeName(a.mode)].forEach(t => meta.appendChild(h('span', {class:'tag', text:t})));
+  wrap.appendChild(meta);
+  wrap.appendChild(h('h3', {class:'out-title', text:a.title}));
+  wrap.appendChild(h('div', {class:'body', text:a.body}));
+  wrap.appendChild(h('p', {class:'extra', text:'话题标签：' + (a.tags || '')}));
+  wrap.appendChild(h('p', {class:'extra', text:'封面文案：' + (a.cover || '')}));
+  const actions = h('div', {class:'actions'});
+  actions.appendChild(h('button', {type:'button', class:'ghost', 'data-act':'copy', text:'复制全文'}));
+  actions.appendChild(h('button', {type:'button', class:'ghost', 'data-act':'save', text:'存入知识库'}));
+  actions.appendChild(h('button', {type:'button', class:'ghost', 'data-act':'synccover', text:'做封面'}));
+  actions.appendChild(h('button', {type:'button', class:'ghost', 'data-go':'publish', text:'去发布中心'}));
+  wrap.appendChild(actions);
+  wrap.appendChild(h('p', {class:'hint', text:'封面预览 1080×1440，下载的是原图，不会上传。'}));
+  const frame = h('div', {class:'frame sm'});
+  frame.appendChild(h('canvas', {class:'cover-canvas', id:'thumbCanvas', width:'1080', height:'1440'}));
+  wrap.appendChild(frame);
+  wrap.appendChild(h('button', {type:'button', class:'tiny', 'data-act':'download', text:'下载 PNG'}));
+  return wrap;
+}
+function renderChat() {
+  const v = document.getElementById('view');
+  const tpls = TPLS.map(t => '<button type="button" class="tpl" style="background:' + t.bg + '" data-act="tpl" data-id="' + t.id + '"><b>' + esc(t.name) + '</b><span>' + esc(t.desc) + '</span></button>').join('');
+  const jumps = [
+    ['workshop','选题工坊','一周七个可拍的题'],
+    ['radar','热点雷达','校历节点示例，不是实时榜'],
+    ['library','知识库','草稿和片段留在本机'],
+    ['cover','做配图','1080×1440 封面 PNG'],
+    ['publish','发布中心','文案包和核对清单'],
+    ['tools','工具&技能','钩子、一稿多发、平台规范'],
+    ['account','账号空间','班级名和口吻，本地保存']
+  ].map(j => '<button type="button" class="jump" data-go="' + j[0] + '"><b>' + j[1] + '</b><span>' + j[2] + '</span></button>').join('');
+  const examples = EXAMPLES.map(ex => '<button type="button" class="tiny" data-act="example" data-topic="' + esc(ex) + '">' + esc(ex) + '</button>').join('');
+  v.innerHTML =
+    '<section class="composer">' +
+    '<h2 class="hero-title" id="viewTitle" tabindex="-1">今天想记录班级的哪一件事？</h2>' +
+    '<p class="hero-sub">选平台 → 选功能 → 选年级 → 写下选题。本地模板出草稿，复制后请人工审核再发布。</p>' +
+    '<div class="label">平台</div>' + chipHTML(PLATS, state.platform, 'platform') +
+    '<div class="label">功能</div>' + chipHTML(MODES, state.mode, 'mode') +
+    '<div class="label">年级</div>' + chipHTML(GRADES, state.grade, 'grade') +
+    '<label class="label" for="topic">选题 / 粘贴要点</label>' +
+    '<textarea id="topic" maxlength="600" placeholder="例如：新高一军训第一周、高二选科家长会复盘、高三一模后班级加油站、运动会入场式幕后……"></textarea>' +
+    '<div class="chips" style="margin-top:8px">' + examples + '</div>' +
+    '<div class="actions"><span class="hint">本地示意模板 · Ctrl/⌘ + Enter 生成</span>' +
+    '<button type="button" class="ghost" data-act="copy">复制全文</button>' +
+    '<button type="button" class="primary" id="genBtn" data-act="generate"' + (state.busy ? ' disabled' : '') + '>' + (state.busy ? '生成中…' : '生成') + '</button></div>' +
+    '</section><div id="slot"></div>' +
+    '<h3 class="sec">从模板开始</h3><div class="grid4">' + tpls + '</div>' +
+    '<h3 class="sec">快捷入口</h3><div class="grid2">' + jumps + '</div>' + footHTML();
+  document.getElementById('topic').value = state.topic || '';
+  const slot = document.getElementById('slot');
+  if (state.article) slot.appendChild(articleNode(state.article));
+  else slot.appendChild(h('p', {class:'hint', id:'empty', text:'生成结果会显示在这里。'}));
+  drawAll();
+}
+function renderWorkshop() {
+  const plan = state.plan;
+  const stale = plan && (plan.grade !== state.wGrade || plan.platform !== state.wPlat || (plan.theme || '') !== (state.theme || ''));
+  const cards = plan ? plan.days.map((d, i) =>
+    '<button type="button" class="cardbtn" data-act="useday" data-i="' + i + '"><span class="k">' + esc(d.day) + ' · ' + esc(d.slot) + '</span><strong>' + esc(d.title) + '</strong><span>' + esc(d.angle) + '</span><em>填入创作台 · ' + esc(modeName(d.mode)) + '</em></button>'
+  ).join('') : '';
+  document.getElementById('view').innerHTML =
+    '<h2 id="viewTitle" tabindex="-1">选题工坊</h2>' +
+    '<p class="lead">按年级和平台编排一周可拍的选题。点一条，就会填进创作台。</p>' +
+    '<div class="banner">日历由本地模板生成，只是一周拍摄计划，不是学校官方校历。</div>' +
+    '<div class="label">年级</div>' + chipHTML(GRADES, state.wGrade, 'wgrade') +
+    '<div class="label">平台</div>' + chipHTML(PLATS, state.wPlat, 'wplat') +
+    '<label class="label" for="theme">主题（可不填）</label>' +
+    '<input id="theme" type="text" maxlength="40" placeholder="例如：军训、家长会、运动会">' +
+    '<div class="actions"><button type="button" class="primary" data-act="week">生成本周选题</button>' +
+    (plan ? '<button type="button" class="ghost" data-act="copyweek">复制整周计划</button>' : '') + '</div>' +
+    (stale ? '<p class="hint">上面的条件已改，下面仍是上次的结果。再点一次按钮就会重算。</p>' : '') +
+    '<div class="grid2">' + cards + '</div>' + footHTML();
+  document.getElementById('theme').value = state.theme || '';
+}
+function renderRadar() {
+  const items = HOTS.filter(h => state.radar === 'all' || h.grades.indexOf(state.radar) >= 0);
+  const chips = [{id:'all', label:'全部'}].concat(GRADES);
+  const cards = items.map(h =>
+    '<button type="button" class="cardbtn" data-act="hot" data-id="' + h.id + '"><span class="k">' + esc(h.months) + ' · 本地示例</span><strong>' + esc(h.title) + '</strong><span>' + esc(h.grades.map(gradeName).join(' · ')) + ' · ' + esc(modeName(h.mode)) + '</span><span>' + esc(h.note) + '</span><em>点此填入创作台</em></button>'
+  ).join('');
+  document.getElementById('view').innerHTML =
+    '<h2 id="viewTitle" tabindex="-1">热点雷达</h2>' +
+    '<p class="lead">按年级看班级节点，点一张卡片就填进创作台。</p>' +
+    '<div class="banner">以下为北京高中班级常见节点的本地示例，供选题参考。不是小红书、抖音等平台的实时热榜，也不会联网更新。各校校历不同。</div>' +
+    '<div class="label">年级</div>' + chipHTML(chips, state.radar, 'rgrade') +
+    '<div class="grid2">' + cards + '</div>' + footHTML();
+}
+function renderLibrary() {
+  const draftsOn = state.libTab !== 'snips';
+  document.getElementById('view').innerHTML =
+    '<h2 id="viewTitle" tabindex="-1">知识库</h2>' +
+    '<p class="lead">草稿和提示词只保存在这台浏览器，清除站点数据就会消失。</p>' +
+    '<div class="chips">' +
+    '<button type="button" class="chip' + (draftsOn ? ' active' : '') + '" data-act="tab" data-tab="drafts">草稿 ' + state.drafts.length + '</button>' +
+    '<button type="button" class="chip' + (!draftsOn ? ' active' : '') + '" data-act="tab" data-tab="snips">提示词 ' + state.snips.length + '</button></div>' +
+    '<input id="q" type="search" placeholder="' + (draftsOn ? '搜索标题、选题或正文' : '搜索片段') + '" value="">' +
+    '<div id="list"></div>' +
+    (draftsOn ? '' :
+      '<form id="snipForm"><label class="label" for="snipTitle">新片段</label><input id="snipTitle" type="text" maxlength="24" placeholder="标题，例如：开场钩子"><label class="label" for="snipText">内容</label><textarea id="snipText" maxlength="400" placeholder="写一条以后能复用的提示"></textarea><div class="actions"><button class="primary" type="submit">保存片段</button><button type="button" class="ghost" data-act="restoresnip">恢复示例片段</button></div></form>') +
+    footHTML();
+  document.getElementById('q').value = state.q || '';
+  paintList();
+}
+function paintList() {
+  const box = document.getElementById('list');
+  if (!box) return;
+  box.innerHTML = '';
+  const q = (state.q || '').trim();
+  if (state.libTab === 'snips') {
+    const rows = state.snips.filter(s => !q || ((s.title || '') + (s.text || '')).indexOf(q) >= 0);
+    if (!rows.length) { box.appendChild(h('p', {class:'hint', text: q ? '没有匹配的片段' : '还没有片段'})); return; }
+    rows.forEach(s => {
+      const card = h('div', {class:'lib'});
+      card.appendChild(h('strong', {text: s.title || '未命名'}));
+      card.appendChild(h('p', {text: s.text || ''}));
+      const row = h('div', {class:'actions'});
+      row.appendChild(h('button', {type:'button', class:'tiny', 'data-act':'usesnip', 'data-id':s.id, text:'放入选题'}));
+      row.appendChild(h('button', {type:'button', class:'tiny', 'data-act':'copysnip', 'data-id':s.id, text:'复制'}));
+      row.appendChild(h('button', {type:'button', class:'tiny', 'data-act':'delsnip', 'data-id':s.id, text:'删除'}));
+      card.appendChild(row);
+      box.appendChild(card);
+    });
+    return;
   }
-  return {title, body:paras.join('\n'),
-    tags:platform==='xhs'?('#北京高中生活 #'+g+' #'+tagK+' #高中生真实记录 #校园vlog'):('#北京高中 #'+g+' #'+tagK+' #班级宣传 #校园'),
-    cover:'封面文案：「'+k+'」· '+g+'；副行「现场感 · 不摆拍」'};
+  const rows = state.drafts.filter(d => !q || ((d.title || '') + (d.topic || '') + (d.body || '')).indexOf(q) >= 0);
+  if (!rows.length) { box.appendChild(h('p', {class:'hint', text: q ? '没有匹配的草稿' : '还没有草稿。在创作台生成后点「存入知识库」。'})); return; }
+  rows.forEach(d => {
+    const card = h('div', {class:'lib'});
+    card.appendChild(h('strong', {text: d.title}));
+    card.appendChild(h('p', {class:'hint', text: fmt(d.at) + ' · ' + gradeName(d.grade) + ' · ' + platName(d.platform) + ' · ' + modeName(d.mode)}));
+    card.appendChild(h('p', {text: clip(d.body || '', 80)}));
+    const row = h('div', {class:'actions'});
+    row.appendChild(h('button', {type:'button', class:'tiny', 'data-act':'open', 'data-id':d.id, text:'打开'}));
+    row.appendChild(h('button', {type:'button', class:'tiny', 'data-act':'copydraft', 'data-id':d.id, text:'复制'}));
+    row.appendChild(h('button', {type:'button', class:'tiny', 'data-act':'del', 'data-id':d.id, text:'删除'}));
+    card.appendChild(row);
+    box.appendChild(card);
+  });
 }
-function render(art){
-  const el=document.getElementById('result'), empty=document.getElementById('empty');
-  empty.style.display='none'; el.style.display='block';
-  el.innerHTML='<div class="meta"><span class="tag">'+gLabel()+'</span><span class="tag">'+pLabel()+'</span><span class="tag">'+MODES.find(m=>m.id===mode).label+'</span></div><h2 class="out-title"></h2><div class="body"></div><div class="tags"></div><div class="cover"></div>';
-  el.querySelector('.out-title').textContent=art.title;
-  el.querySelector('.body').textContent=art.body;
-  el.querySelector('.tags').textContent='话题标签：'+art.tags;
-  el.querySelector('.cover').textContent='封面文案：'+art.cover;
-  lastText=art.title+'\n\n'+art.body+'\n\n话题标签：'+art.tags+'\n封面文案：'+art.cover;
+function renderCover() {
+  document.getElementById('view').innerHTML =
+    '<h2 id="viewTitle" tabindex="-1">做配图</h2>' +
+    '<p class="lead">在浏览器里画一张 1080×1440 的班级封面，下载 PNG。图片不会上传。</p>' +
+    '<label class="label" for="cTitle">主标题</label><input id="cTitle" type="text" maxlength="36" data-cover="title">' +
+    '<label class="label" for="cSub">副标题</label><input id="cSub" type="text" maxlength="48" data-cover="sub">' +
+    '<label class="label" for="cBadge">角标</label><input id="cBadge" type="text" maxlength="8" data-cover="badge">' +
+    '<div class="label">年级色</div>' + chipHTML(GRADES, state.cover.grade, 'cgrade') +
+    '<div class="label">平台色带</div>' + chipHTML(PLATS, state.cover.platform, 'cplat') +
+    '<div class="actions"><button type="button" class="primary" data-act="download">下载 PNG（1080×1440）</button><button type="button" class="ghost" data-act="synccover">用当前草稿填写</button></div>' +
+    '<div class="frame"><canvas id="coverCanvas" class="cover-canvas" width="1080" height="1440"></canvas></div>' + footHTML();
+  document.getElementById('cTitle').value = state.cover.title || '';
+  document.getElementById('cSub').value = state.cover.sub || '';
+  document.getElementById('cBadge').value = state.cover.badge || '';
+  drawAll();
 }
-document.getElementById('genBtn').onclick=async()=>{
-  const btn=document.getElementById('genBtn'), loading=document.getElementById('loading');
-  btn.disabled=true; loading.classList.add('on');
-  await new Promise(r=>setTimeout(r,900+Math.random()*500));
-  render(buildArticle(document.getElementById('topic').value));
-  btn.disabled=false; loading.classList.remove('on');
-};
-document.getElementById('copyBtn').onclick=async()=>{
-  if(!lastText){toast('先生成一篇再复制');return;}
-  try{await navigator.clipboard.writeText(lastText);toast('已复制全文');}catch{toast('复制失败，请手动选择文本');}
-};
-function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),1600);}
-document.getElementById('topic').value='运动会入场式幕后';
+function checkKey() {
+  if (!state.article) return '';
+  return String(state.article.title || '') + '|' + String(state.article.topic || '');
+}
+function makePacks() {
+  const a = state.article;
+  if (!a) return [];
+  return PLATS.map(p => {
+    if (p.id === a.platform) return {plat:p, article:a};
+    return {plat:p, article: buildArticle({topic:a.topic, grade:a.grade, platform:p.id, mode:a.mode, profile: state.profile})};
+  });
+}
+function packText(pk) {
+  return '【平台】' + pk.plat.label + '\n【标题】' + pk.article.title + '\n【正文】\n' + pk.article.body + '\n【标签】' + pk.article.tags + '\n【封面提示】' + pk.article.cover;
+}
+function renderPublish() {
+  if (!state.article) {
+    document.getElementById('view').innerHTML =
+      '<h2 id="viewTitle" tabindex="-1">发布中心</h2>' +
+      '<div class="banner">还没有草稿。先在创作台生成一篇，再来整理文案包。这里不会真正发布。</div>' +
+      '<button type="button" class="primary" data-go="chat">去创作台</button>' + footHTML();
+    return;
+  }
+  const packs = makePacks();
+  const map = state.checks[checkKey()] || {};
+  const done = CHECKS.filter(c => map[c[0]]).length;
+  const list = CHECKS.map(c =>
+    '<label class="check"><input type="checkbox" data-check="' + c[0] + '"' + (map[c[0]] ? ' checked' : '') + '><span>' + esc(c[1]) + '</span></label>'
+  ).join('');
+  const blocks = packs.map(pk => {
+    const open = pk.plat.id === state.article.platform ? ' open' : '';
+    return '<details class="pack"' + open + '><summary>' + esc(pk.plat.label) + ' · ' + esc(clip(pk.article.title, 28)) + '</summary>' +
+      '<p><b>标题</b><br>' + esc(pk.article.title) + '</p>' +
+      '<p><b>正文</b></p><div class="body">' + esc(pk.article.body) + '</div>' +
+      '<p><b>标签</b> ' + esc(pk.article.tags) + '</p>' +
+      '<p><b>封面提示</b> ' + esc(pk.article.cover) + '</p>' +
+      '<div class="actions">' +
+      '<button type="button" class="tiny" data-act="copypack" data-part="title" data-plat="' + pk.plat.id + '">复制标题</button>' +
+      '<button type="button" class="tiny" data-act="copypack" data-part="body" data-plat="' + pk.plat.id + '">复制正文</button>' +
+      '<button type="button" class="tiny" data-act="copypack" data-part="tags" data-plat="' + pk.plat.id + '">复制标签</button>' +
+      '<button type="button" class="tiny" data-act="copypack" data-part="all" data-plat="' + pk.plat.id + '">复制此平台文案包</button>' +
+      '</div><p class="hint">复制不等于已发布。</p></details>';
+  }).join('');
+  document.getElementById('view').innerHTML =
+    '<h2 id="viewTitle" tabindex="-1">发布中心</h2>' +
+    '<div class="banner">这里只整理文案和清单。复制之后，请人工审核，再由同学或老师自行到对应 App 发布。工作台不会真正发布，也没有平台接口。</div>' +
+    '<p>基于当前草稿「' + esc(state.article.title) + '」，按同一选题给六个平台各出一版。</p>' +
+    '<h3 class="sec">发布前清单 <span id="prog">已核对 ' + done + ' / ' + CHECKS.length + '</span></h3>' +
+    '<p class="hint">勾选只保存在这台浏览器，方便你自己核对，不是审批流程。</p>' + list +
+    '<div class="actions"><button type="button" class="primary" data-act="copypack" data-part="every">复制全部平台文案包</button></div>' +
+    blocks + footHTML();
+}
+function renderAccount() {
+  const p = state.draftProfile;
+  document.getElementById('view').innerHTML =
+    '<h2 id="viewTitle" tabindex="-1">账号空间</h2>' +
+    '<p class="lead">这些内容只存在这台浏览器，用来当作新对话的默认值。没有登录。</p>' +
+    '<form id="accForm">' +
+    '<label class="label" for="accClass">班级名</label><input id="accClass" type="text" maxlength="24" placeholder="例如：高一（3）班">' +
+    '<div class="label">默认年级</div>' + chipHTML(GRADES, p.grade, 'agrade') +
+    '<div class="label">常用平台（可多选，新对话用第一个）</div>' + chipMulti(PLATS, p.platforms, 'aplat') +
+    '<label class="label" for="accVoice">口吻备注</label><textarea id="accVoice" maxlength="240"></textarea>' +
+    '<div class="actions"><button class="primary" type="submit">保存到本机</button><button type="button" class="ghost" data-act="resetprofile">恢复示例</button></div>' +
+    '</form><p class="hint">保存后，点「新对话」会按这里的年级和第一个常用平台开始。换浏览器或清除站点数据后需要重填。</p>' + footHTML();
+  document.getElementById('accClass').value = p.className || '';
+  document.getElementById('accVoice').value = p.voice || '';
+}
+function renderTools() {
+  const cards = TOOLS.map((t, i) =>
+    '<details class="tool"' + (i === 0 ? ' open' : '') + '><summary>' + esc(t.title) + '</summary><ul>' +
+    t.points.map(p => '<li>' + esc(p) + '</li>').join('') + '</ul></details>'
+  ).join('');
+  document.getElementById('view').innerHTML =
+    '<h2 id="viewTitle" tabindex="-1">工具&技能</h2>' +
+    '<p class="lead">写选题、改一稿多发、对平台规范时可以翻的页内说明。不需要安装插件，也不会跳到别的产品。</p>' +
+    cards + footHTML();
+}
+function updateChrome() {
+  document.getElementById('crumb').textContent = CRUMB[state.view] || '创作台';
+  document.title = '北京高中班级新媒体工作台 · ' + (CRUMB[state.view] || '');
+  document.querySelectorAll('#nav [data-go]').forEach(btn => {
+    const on = btn.dataset.go === state.view;
+    btn.classList.toggle('active', on);
+    if (on) btn.setAttribute('aria-current', 'page');
+    else btn.removeAttribute('aria-current');
+  });
+  const name = ((state.profile && state.profile.className) || '').trim();
+  document.getElementById('footName').textContent = name || '未填写班级';
+  document.getElementById('footMeta').textContent = gradeName(state.grade) + ' · 只存在本机';
+  document.getElementById('avatar').textContent = name ? Array.from(name)[0] : '班';
+  document.getElementById('who').textContent = name || '设置班级';
+  const badge = document.getElementById('libN');
+  badge.textContent = state.drafts.length ? String(state.drafts.length) : '';
+  badge.hidden = !state.drafts.length;
+}
+function render() {
+  updateChrome();
+  if (state.view === 'chat') return renderChat();
+  if (state.view === 'workshop') return renderWorkshop();
+  if (state.view === 'radar') return renderRadar();
+  if (state.view === 'library') return renderLibrary();
+  if (state.view === 'cover') return renderCover();
+  if (state.view === 'publish') return renderPublish();
+  if (state.view === 'account') return renderAccount();
+  if (state.view === 'tools') return renderTools();
+  state.view = 'chat';
+  renderChat();
+}
+function closeMenu() {
+  document.getElementById('side').classList.remove('open');
+  document.getElementById('mask').classList.remove('show');
+  document.body.classList.remove('nav-open');
+}
+function syncLayout() {
+  const mobile = window.matchMedia('(max-width: 860px)').matches;
+  document.body.classList.toggle('is-mobile', mobile);
+  if (!mobile) closeMenu();
+}
+function toggleMenu() {
+  if (!window.matchMedia('(max-width: 860px)').matches) return;
+  const open = document.getElementById('side').classList.toggle('open');
+  document.getElementById('mask').classList.toggle('show', open);
+  document.body.classList.toggle('nav-open', open);
+}
+function applyView(view) {
+  state.view = view;
+  closeMenu();
+  render();
+  persistSession();
+}
+function showView(view, opts) {
+  if (VIEWS.indexOf(view) < 0) view = 'chat';
+  genToken++;
+  state.busy = false;
+  if (opts && opts.fresh) {
+    state.topic = '';
+    state.article = null;
+    state.mode = 'note';
+    state.grade = state.profile.grade || 'g1';
+    state.platform = (state.profile.platforms && state.profile.platforms[0]) || 'mp';
+    toast('已清空创作台，知识库里的草稿还在');
+  }
+  if (view === 'account' && state.view !== 'account') state.draftProfile = clone(state.profile);
+  if (view === 'workshop' && state.view !== 'workshop' && !state.weekTouched) {
+    state.wGrade = state.grade;
+    state.wPlat = state.platform;
+  }
+  applyView(view);
+}
+function go(view, opts) {
+  if (VIEWS.indexOf(view) < 0) view = 'chat';
+  if (location.hash !== '#' + view) {
+    suppressHash = true;
+    location.hash = view;
+    suppressHash = false;
+  }
+  showView(view, opts);
+}
+function onChoice(btn) {
+  const key = btn.dataset.choice;
+  const id = btn.dataset.id;
+  if (key === 'grade' && known(GRADES, id)) state.grade = id;
+  else if (key === 'platform' && known(PLATS, id)) state.platform = id;
+  else if (key === 'mode' && known(MODES, id)) state.mode = id;
+  else if (key === 'wgrade' && known(GRADES, id)) { state.wGrade = id; state.weekTouched = true; }
+  else if (key === 'wplat' && known(PLATS, id)) { state.wPlat = id; state.weekTouched = true; }
+  else if (key === 'cgrade' && known(GRADES, id)) state.cover.grade = id;
+  else if (key === 'cplat' && known(PLATS, id)) state.cover.platform = id;
+  else if (key === 'rgrade' && (id === 'all' || known(GRADES, id))) state.radar = id;
+  else if (key === 'agrade' && known(GRADES, id)) state.draftProfile.grade = id;
+  else if (key === 'aplat' && known(PLATS, id)) {
+    const set = new Set(state.draftProfile.platforms);
+    if (set.has(id)) {
+      if (set.size === 1) { toast('至少留一个常用平台'); return; }
+      set.delete(id);
+    } else set.add(id);
+    state.draftProfile.platforms = PLATS.map(p => p.id).filter(x => set.has(x));
+  } else return;
+  render();
+  persistSession();
+}
+function generate() {
+  const box = document.getElementById('topic');
+  if (box) state.topic = box.value;
+  const token = ++genToken;
+  const snapshot = {topic: state.topic, grade: state.grade, platform: state.platform, mode: state.mode, profile: clone(state.profile)};
+  state.busy = true;
+  if (state.view === 'chat') render();
+  setTimeout(() => {
+    if (token !== genToken) return;
+    state.article = buildArticle(snapshot);
+    state.busy = false;
+    fillCoverFrom(state.article);
+    persistSession();
+    if (state.view === 'chat') {
+      render();
+      const result = document.getElementById('result');
+      if (result) result.scrollIntoView({block:'nearest'});
+    } else toast('草稿已生成，回到创作台可查看');
+  }, 350);
+}
+function saveDraft() {
+  const a = state.article;
+  if (!a) { toast('先生成一篇再保存'); return; }
+  if (state.drafts.some(d => d.title === a.title && d.body === a.body)) { toast('知识库里已有相同草稿'); return; }
+  state.drafts.unshift({
+    id: uid(), at: Date.now(), topic: a.topic, grade: a.grade, platform: a.platform, mode: a.mode,
+    title: a.title, body: a.body, tags: a.tags, cover: a.cover, coverTitle: a.coverTitle
+  });
+  state.drafts = state.drafts.slice(0, 40);
+  localSet('bjcm-drafts-v1', state.drafts);
+  updateChrome();
+  toast('已存入知识库');
+}
+function openDraft(id) {
+  const d = state.drafts.find(x => x.id === id);
+  if (!d) return;
+  state.topic = d.topic || '';
+  if (known(GRADES, d.grade)) state.grade = d.grade;
+  if (known(PLATS, d.platform)) state.platform = d.platform;
+  if (known(MODES, d.mode)) state.mode = d.mode;
+  state.article = {
+    title: d.title, body: d.body, tags: d.tags || '', cover: d.cover || '',
+    coverTitle: d.coverTitle || d.topic || '', topic: d.topic || '', grade: d.grade, platform: d.platform, mode: d.mode
+  };
+  fillCoverFrom(state.article);
+  go('chat');
+  toast('已在创作台打开');
+}
+function armDelete(btn, label) {
+  if (btn.dataset.arm !== '1') {
+    btn.dataset.arm = '1';
+    btn.textContent = '确认删除';
+    setTimeout(() => { if (btn.isConnected) { btn.dataset.arm = ''; btn.textContent = label; } }, 2200);
+    return false;
+  }
+  return true;
+}
+function syncCover() {
+  const box = document.getElementById('topic');
+  if (box) state.topic = box.value;
+  if (state.article) fillCoverFrom(state.article);
+  else {
+    state.cover.title = clip((state.topic || '').trim() || '班级这一周', 24);
+    state.cover.sub = gradeName(state.grade) + ' · ' + classLabel() + ' · ' + platName(state.platform);
+    state.cover.grade = state.grade;
+    state.cover.platform = state.platform;
+    state.cover.badge = state.cover.badge || '班级记录';
+  }
+  if (state.view === 'cover') { render(); toast('已按当前内容填好封面'); persistSession(); }
+  else go('cover');
+}
+function downloadCover() {
+  drawAll();
+  const canvas = document.getElementById('coverCanvas') || document.querySelector('canvas.cover-canvas');
+  if (!canvas) { toast('请先打开做配图'); return; }
+  const a = document.createElement('a');
+  a.href = canvas.toDataURL('image/png');
+  a.download = '班级封面-' + ((state.cover.title || '封面').replace(/[\\/:*?"<>|\s]+/g, '-').slice(0, 40)) + '.png';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  toast('已下载 PNG');
+}
+function copyPack(part, plat) {
+  const packs = makePacks();
+  if (!packs.length) { toast('先生成一篇草稿'); return; }
+  if (part === 'every') { copyText(packs.map(packText).join('\n\n--------\n\n'), '已复制全部文案包'); return; }
+  const pk = packs.find(p => p.plat.id === plat);
+  if (!pk) return;
+  if (part === 'all') copyText(packText(pk), '已复制' + pk.plat.label + '文案包');
+  else if (part === 'title') copyText(pk.article.title, '已复制标题');
+  else if (part === 'body') copyText(pk.article.body, '已复制正文');
+  else if (part === 'tags') copyText(pk.article.tags, '已复制标签');
+}
+function saveProfile() {
+  const p = state.draftProfile;
+  p.className = document.getElementById('accClass').value.trim().slice(0, 24);
+  p.voice = document.getElementById('accVoice').value.trim().slice(0, 240);
+  if (!p.platforms.length) p.platforms = ['mp'];
+  state.profile = clone(p);
+  state.draftProfile = clone(p);
+  localSet('bjcm-profile-v1', state.profile);
+  updateChrome();
+  toast('已保存在这台浏览器');
+}
+function addSnip() {
+  const title = document.getElementById('snipTitle').value.trim().slice(0, 24);
+  const text = document.getElementById('snipText').value.trim().slice(0, 400);
+  if (!text) { toast('先写片段内容'); return; }
+  state.snips.unshift({id: uid(), title: title || '未命名', text: text, at: Date.now()});
+  state.snips = state.snips.slice(0, 80);
+  localSet('bjcm-snips-v1', state.snips);
+  render();
+  toast('已保存片段');
+}
+function onClick(e) {
+  const el = e.target.closest('[data-go],[data-choice],[data-act]');
+  if (!el) return;
+  if (el.dataset.act === 'menu') { toggleMenu(); return; }
+  if (el.dataset.act === 'closemenu') { closeMenu(); return; }
+  if (el.dataset.choice) { onChoice(el); return; }
+  const act = el.dataset.act;
+  if (!act && el.dataset.go) { go(el.dataset.go); return; }
+  if (act === 'fresh') go('chat', {fresh:true});
+  else if (act === 'generate') generate();
+  else if (act === 'copy') {
+    if (!state.article) toast('先生成一篇再复制');
+    else copyText(plain(state.article), '已复制全文');
+  } else if (act === 'save') saveDraft();
+  else if (act === 'tpl') {
+    const t = TPLS.find(x => x.id === el.dataset.id);
+    if (!t) return;
+    state.mode = t.mode;
+    state.topic = t.topic;
+    state.article = null;
+    if (t.mode === 'cover') state.cover.title = '我们班这一周';
+    render();
+    const ta = document.getElementById('topic');
+    if (ta) ta.focus();
+    persistSession();
+    toast('已填好模式和选题');
+  } else if (act === 'example') {
+    state.topic = el.dataset.topic || '';
+    render();
+    persistSession();
+  } else if (act === 'week') {
+    const themeBox = document.getElementById('theme');
+    if (themeBox) state.theme = themeBox.value.trim().slice(0, 40);
+    state.weekTouched = true;
+    state.plan = {grade: state.wGrade, platform: state.wPlat, theme: state.theme, days: weekPlan(state.wGrade, state.wPlat, state.theme)};
+    render();
+    persistSession();
+    toast('已生成本周选题');
+  } else if (act === 'copyweek') {
+    if (!state.plan) return;
+    const text = state.plan.days.map(d => d.day + ' · ' + d.slot + '\n' + d.title + '\n' + d.angle + '\n建议功能：' + modeName(d.mode)).join('\n\n');
+    copyText(text, '已复制整周计划');
+  } else if (act === 'useday') {
+    const day = state.plan && state.plan.days[Number(el.dataset.i)];
+    if (!day) return;
+    state.topic = day.topic;
+    state.mode = day.mode;
+    state.grade = state.plan.grade;
+    state.platform = state.plan.platform;
+    state.article = null;
+    go('chat');
+    toast('已填入创作台，点生成即可');
+  } else if (act === 'hot') {
+    const item = HOTS.find(x => x.id === el.dataset.id);
+    if (!item) return;
+    const grade = (state.radar !== 'all' && item.grades.indexOf(state.radar) >= 0) ? state.radar : (item.grades.indexOf(state.grade) >= 0 ? state.grade : item.grades[0]);
+    state.grade = grade;
+    state.mode = item.mode;
+    state.topic = item.topic;
+    state.article = null;
+    go('chat');
+    toast('已填入创作台 · 这是本地示例选题');
+  } else if (act === 'tab') {
+    state.libTab = el.dataset.tab === 'snips' ? 'snips' : 'drafts';
+    render();
+  } else if (act === 'open') openDraft(el.dataset.id);
+  else if (act === 'copydraft') {
+    const d = state.drafts.find(x => x.id === el.dataset.id);
+    if (d) copyText(plain(d), '已复制全文');
+  } else if (act === 'del') {
+    if (!armDelete(el, '删除')) return;
+    state.drafts = state.drafts.filter(d => d.id !== el.dataset.id);
+    localSet('bjcm-drafts-v1', state.drafts);
+    updateChrome();
+    paintList();
+    toast('已删除');
+  } else if (act === 'usesnip') {
+    const s = state.snips.find(x => x.id === el.dataset.id);
+    if (!s) return;
+    state.topic = state.topic ? (state.topic.trim() + '\n' + s.text) : s.text;
+    go('chat');
+    toast('已放入选题框');
+  } else if (act === 'copysnip') {
+    const s = state.snips.find(x => x.id === el.dataset.id);
+    if (s) copyText((s.title ? s.title + '\n' : '') + s.text, '已复制片段');
+  } else if (act === 'delsnip') {
+    if (!armDelete(el, '删除')) return;
+    state.snips = state.snips.filter(s => s.id !== el.dataset.id);
+    localSet('bjcm-snips-v1', state.snips);
+    paintList();
+    toast('已删除');
+  } else if (act === 'restoresnip') {
+    const have = new Set(state.snips.map(s => s.id));
+    PRESETS.forEach(p => { if (!have.has(p.id)) state.snips.push(Object.assign({at:0, preset:true}, p)); });
+    localSet('bjcm-snips-v1', state.snips);
+    render();
+    toast('已补回示例片段');
+  } else if (act === 'synccover') syncCover();
+  else if (act === 'download') downloadCover();
+  else if (act === 'copypack') copyPack(el.dataset.part, el.dataset.plat);
+  else if (act === 'resetprofile') {
+    state.draftProfile = clone(DEFAULT_PROFILE);
+    render();
+    toast('已填回示例，点保存才会写入本机');
+  }
+}
+function onInput(e) {
+  const t = e.target;
+  if (t.id === 'topic') { state.topic = t.value; persistSession(); }
+  else if (t.id === 'theme') state.theme = t.value;
+  else if (t.id === 'q') { state.q = t.value; paintList(); }
+  else if (t.dataset.cover) { state.cover[t.dataset.cover] = t.value; drawAll(); persistSession(); }
+  else if (t.id === 'accClass' && state.draftProfile) state.draftProfile.className = t.value;
+  else if (t.id === 'accVoice' && state.draftProfile) state.draftProfile.voice = t.value;
+}
+function onChange(e) {
+  if (!e.target.dataset.check) return;
+  const key = checkKey();
+  if (!key) return;
+  state.checks[key] = state.checks[key] || {};
+  state.checks[key][e.target.dataset.check] = e.target.checked;
+  const keys = Object.keys(state.checks);
+  if (keys.length > 30) keys.slice(0, keys.length - 30).forEach(k => { delete state.checks[k]; });
+  localSet('bjcm-checks-v1', state.checks);
+  const prog = document.getElementById('prog');
+  if (prog) {
+    const done = CHECKS.filter(c => state.checks[key][c[0]]).length;
+    prog.textContent = '已核对 ' + done + ' / ' + CHECKS.length;
+  }
+}
+function onSubmit(e) {
+  if (e.target.id === 'accForm') { e.preventDefault(); saveProfile(); }
+  if (e.target.id === 'snipForm') { e.preventDefault(); addSnip(); }
+}
+function onKey(e) {
+  if (e.key === 'Escape') closeMenu();
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && state.view === 'chat') {
+    e.preventDefault();
+    generate();
+  }
+}
+function init() {
+  state.profile = loadProfile();
+  state.draftProfile = clone(state.profile);
+  state.drafts = loadDrafts();
+  state.snips = loadSnips();
+  state.checks = localGet('bjcm-checks-v1', {}) || {};
+  state.grade = state.profile.grade;
+  state.platform = state.profile.platforms[0] || 'mp';
+  state.wGrade = state.grade;
+  state.wPlat = state.platform;
+  state.cover = defaultCover();
+  restoreSession();
+  document.body.addEventListener('click', onClick);
+  document.body.addEventListener('input', onInput);
+  document.body.addEventListener('change', onChange);
+  document.body.addEventListener('submit', onSubmit);
+  document.addEventListener('keydown', onKey);
+  window.addEventListener('resize', syncLayout);
+  syncLayout();
+  window.addEventListener('hashchange', () => {
+    if (suppressHash) return;
+    const v = location.hash.replace('#', '');
+    if (VIEWS.indexOf(v) < 0 || v === state.view) return;
+    showView(v);
+  });
+  const hv = location.hash.replace('#', '');
+  if (VIEWS.indexOf(hv) < 0) {
+    suppressHash = true;
+    location.hash = 'chat';
+    suppressHash = false;
+    showView('chat');
+  } else showView(hv);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawAll);
+  window.BJCM = {buildArticle: buildArticle, weekPlan: weekPlan, getState: () => state};
+}
+init();
 </script>
 </body>
 </html>
