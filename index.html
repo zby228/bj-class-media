@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>北京高中班级新媒体工作台</title>
+<style>
+:root{--bg:#f7f4ef;--card:#fff;--ink:#1c1917;--muted:#78716c;--line:#e7e5e4;--accent:#ea580c;--accent-soft:#fff7ed;--shadow:0 10px 30px rgba(28,25,23,.06);--radius:16px;--font:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif}
+*{box-sizing:border-box}body{margin:0;font-family:var(--font);color:var(--ink);background:radial-gradient(1200px 600px at 10% -10%,#ffedd5 0%,transparent 55%),radial-gradient(900px 500px at 100% 0%,#e0f2fe 0%,transparent 50%),var(--bg);min-height:100vh}
+.wrap{max-width:980px;margin:0 auto;padding:28px 18px 60px}header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:22px}
+.brand h1{margin:0;font-size:1.45rem}.brand p{margin:6px 0 0;color:var(--muted);font-size:.92rem;line-height:1.5}
+.pill{background:var(--accent-soft);color:var(--accent);border:1px solid #fed7aa;border-radius:999px;padding:6px 12px;font-size:.8rem;white-space:nowrap}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin-bottom:16px}
+.label{font-size:.8rem;color:var(--muted);margin-bottom:6px;margin-top:4px}.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;cursor:pointer;font-size:.9rem}.chip.active{background:var(--accent);border-color:var(--accent);color:#fff}
+textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:14px;font:inherit;resize:vertical;min-height:96px;outline:none}textarea:focus{border-color:#fdba74;box-shadow:0 0 0 3px rgba(234,88,12,.15)}
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+button.primary{background:var(--accent);color:#fff;border:none;border-radius:12px;padding:12px 20px;font:inherit;font-weight:600;cursor:pointer}button.primary:disabled{opacity:.55;cursor:wait}
+button.ghost{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 16px;font:inherit;cursor:pointer}
+.hint{color:var(--muted);font-size:.85rem}.out-title{font-size:1.2rem;font-weight:700;margin:0 0 10px}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}.tag{background:#f5f5f4;border-radius:8px;padding:4px 8px;font-size:.78rem;color:#44403c}
+.body{white-space:pre-wrap;line-height:1.85;font-size:.98rem}.cover,.tags{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line);color:#44403c;font-size:.92rem}
+.empty{color:var(--muted);text-align:center;padding:28px 10px}.loading{display:none;align-items:center;gap:10px;color:var(--accent);font-size:.92rem}.loading.on{display:flex}
+.spinner{width:16px;height:16px;border:2px solid #fed7aa;border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#1c1917;color:#fff;padding:10px 16px;border-radius:999px;font-size:.9rem;opacity:0;pointer-events:none;transition:opacity .2s}.toast.on{opacity:1}
+footer{margin-top:18px;color:var(--muted);font-size:.8rem;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <h1>北京高中班级新媒体工作台</h1>
+      <p>丢一个选题，按年级与平台快速出草稿。纯前端本地生成，任何人打开链接都能用。</p>
+    </div>
+    <div class="pill">Demo · 班级部</div>
+  </header>
+  <section class="card">
+    <div class="label">年级段</div><div class="chips" id="grades"></div>
+    <div class="label">发布平台</div><div class="chips" id="platforms"></div>
+    <div class="label">模式</div><div class="chips" id="modes"></div>
+    <div class="label">选题 / 粘贴要点</div>
+    <textarea id="topic" placeholder="例如：新高一军训第一周、高二选科家长会复盘、高三一模后班级加油站……"></textarea>
+    <div class="actions">
+      <button class="primary" id="genBtn">生成文章</button>
+      <button class="ghost" id="copyBtn" type="button">复制全文</button>
+      <span class="loading" id="loading"><span class="spinner"></span>正在生成…</span>
+      <span class="hint">约 1 秒出稿 · 示意模板，可再人工润色</span>
+    </div>
+  </section>
+  <section class="card">
+    <div class="empty" id="empty">生成结果会显示在这里。</div>
+    <div id="result" style="display:none"></div>
+  </section>
+  <footer>北京高中班级部新媒体 · 新高一 / 高一 / 高二 / 高三 · 仅草稿，请人工审核后发布</footer>
+</div>
+<div class="toast" id="toast">已复制</div>
+<script>
+const GRADES=[
+  {id:'xin',label:'新高一',tone:'入学适应、军训、认识班级、家长期待、新环境第一周'},
+  {id:'g1',label:'高一',tone:'适应节奏、社团招新、第一次家长会、班级文化建设'},
+  {id:'g2',label:'高二',tone:'选科定轨、社团骨干、期中期末、家校沟通加码'},
+  {id:'g3',label:'高三',tone:'一模二模、倒计时、减压加油站、班主任寄语、家校同频'}
+];
+const PLATS=[
+  {id:'xhs',label:'小红书'},{id:'douyin',label:'抖音'},{id:'channels',label:'视频号'},
+  {id:'mp',label:'公众号'},{id:'kuaishou',label:'快手'},{id:'bilibili',label:'B站'}
+];
+const MODES=[
+  {id:'note',label:'写笔记/成稿'},{id:'find',label:'找选题'},
+  {id:'viral',label:'仿爆款大纲'},{id:'script',label:'口播脚本'}
+];
+let grade='g1', platform='mp', mode='note', lastText='';
+function mountChips(el,items,get,set){
+  el.innerHTML='';
+  items.forEach(it=>{
+    const b=document.createElement('button');
+    b.type='button'; b.className='chip'+(get()===it.id?' active':'');
+    b.textContent=it.label;
+    b.onclick=()=>{set(it.id);mountAll();};
+    el.appendChild(b);
+  });
+}
+function mountAll(){
+  mountChips(document.getElementById('grades'),GRADES,()=>grade,v=>grade=v);
+  mountChips(document.getElementById('platforms'),PLATS,()=>platform,v=>platform=v);
+  mountChips(document.getElementById('modes'),MODES,()=>mode,v=>mode=v);
+}
+mountAll();
+const gLabel=()=>GRADES.find(g=>g.id===grade).label;
+const gTone=()=>GRADES.find(g=>g.id===grade).tone;
+const pLabel=()=>PLATS.find(p=>p.id===platform).label;
+function buildArticle(topic){
+  const k=(topic||'').trim()||'班级日常';
+  const g=gLabel(), tone=gTone(), p=pLabel();
+  const tagK=k.replace(/\s+/g,'');
+  if(mode==='find'){
+    return {title:p+' · '+g+' · 「'+k+'」选题方向', body:[
+      '年级焦点：'+tone,'',
+      '① 现场切片：把「'+k+'」拆成准备 / 高潮 / 收束三个可拍镜头。',
+      '② 同学原话：采访两位'+g+'同学，问「最难忘的 10 秒」。',
+      '③ 班主任视角：一条短寄语 + 一张合影说明。',
+      '④ 清单体：家长看完就能转发的「'+g+'·'+k+'注意事项」。',
+      '⑤ 对比体：入学前 vs 现在，或紧张 vs 放松，突出'+g+'成长。',
+      '⑥ 轻互动：评论区征集下一期想看的瞬间。'
+    ].join('\n'), tags:'#北京高中 #'+g+' #班级新媒体 #'+tagK+' #校园生活',
+      cover:'主标题「'+k+'」+ 副标「'+g+'·X班」；竖版大字，避免成绩数字'};
+  }
+  if(mode==='viral'){
+    return {title:'仿爆款结构 · '+g+'「'+k+'」大纲', body:[
+      '结构：强钩子 → 冲突/悬念 → 过程反转 → 情绪落点 → 轻 CTA',
+      '年级焦点：'+tone,'',
+      '钩子（0–3s/首屏）：「'+g+k+'那天，全班最安静的一秒出现在……」',
+      '冲突：预期是热闹，实际最打动人的是一个很小的互助细节。',
+      '过程：三段推进，中间插入一句同学原话。',
+      '落点：情绪落在「我们是一个班」，不是个人炫耀。',
+      'CTA：邀请'+g+'同学投稿下一期「'+k+'」素材；不导流、不带货。'
+    ].join('\n'), tags:'#仿写结构 #'+g+' #班级内容 #'+tagK+' #北京校园',
+      cover:'大字钩子 + 小字「'+g+'真实向」；避免夸张承诺与排名'};
+  }
+  if(mode==='script'){
+    return {title:'口播脚本 · '+p+' · '+g+'「'+k+'」', body:[
+      '【0–2s 钩子】停一下——'+g+'关于'+k+'，有个细节几乎没人拍到。',
+      '【2–8s 交代】我是'+g+'·X班新媒体组。今天只讲三件事。',
+      '【语境】'+tone,
+      '【8–25s 主体1】现场：准备阶段最容易被忽略的动作。',
+      '【25–45s 主体2】高潮：一人失误、全班托住的瞬间。',
+      '【45–55s 主体3】收束：班主任或同学一句原话。',
+      '【55–60s CTA】下期想看哪段？评论区扣 1/2/3。',
+      '【画面】竖屏大字幕；避免成绩与隐私特写。'
+    ].join('\n'), tags:'#口播 #'+g+' #班级短视频 #'+tagK+' #北京高中',
+      cover:'封面：班旗或现场特写 + 「'+g+'·'+k+'·60秒」'};
+  }
+  const openings={
+    xhs:'今天把'+g+'的「'+k+'」完整记下来，留给以后的我们。',
+    douyin:'别划走——'+g+'关于「'+k+'」，全班都在等这一段。',
+    channels:'家长们好。这一期只说'+g+'「'+k+'」里最值得看的三件事。',
+    mp:'【'+g+'班级观察】「'+k+'」：把热闹写成可留存的班级记忆。',
+    kuaishou:'真现场！'+g+'「'+k+'」那天，班旗一举全场都安静了。',
+    bilibili:'一期正经一点的'+g+'向：我们如何把「'+k+'」拍成能反复回看的记录。'
+  };
+  const title=platform==='mp'?(g+'｜'+k+'｜北京高中班级这一周'):platform==='xhs'?(g+'·'+k+'真实记录｜现场感拉满'):(g+'·'+k+'｜班级新媒体示例稿');
+  let paras;
+  if(platform==='mp'){
+    paras=[openings.mp,'','一、写在前面',
+      g+'这一阶段的关键词是：'+tone+'。围绕「'+k+'」，我们不想写空泛的鸡汤，只想把看得见的细节留下来——声音、动作、一句原话，以及班里真正同频的那几秒。',
+      '','二、现场三件事',
+      '1. 准备：开场前最容易被忽略的动作与秩序感。',
+      '2. 高潮：一人失误、全班托住的瞬间——这才是「我们是一个班」。',
+      '3. 收束：班主任或同学的一句原话，比口号更耐读。',
+      '','三、给家长的可转发清单',
+      '- 看完这篇，建议跟孩子聊的一个小问题：你最想被拍进下一期的瞬间是什么？',
+      '- 需要配合的事项：肖像授权、避免公开成绩排名、活动时间与集合点以班主任通知为准。',
+      '','四、下期预告',
+      '下期继续记录'+g+'的日常与节点。欢迎同学投稿素材（照片/短视频/一句话），新媒体组统一整理后发布。',
+      '','（本文为班级新媒体工作台草稿，发布前请班主任审核。）'];
+  } else if(platform==='xhs'){
+    paras=[openings.xhs,'','先说结论：'+g+'的「'+k+'」，最打动人的不是热闹本身，而是几个很小的互助细节。','',
+      '❶ 开场细节：一个声音 / 一个动作 / 一句原话，把你拉进现场。',
+      '❷ 过程：准备 → 高潮 → 收束，三段各配一张图。',
+      '❸ 落点：少鸡汤，多真实；情绪落在集体，不落在炫耀。','','年级语境：'+tone,'',
+      '互动：你最想被拍进下一期的瞬间是什么？评论区告诉我。'];
+  } else {
+    paras=[openings[platform]||openings.channels,'','年级语境：'+tone,'',
+      '一、开场：用一个细节把读者拉进「'+k+'」。',
+      '二、过程：准备、高潮、收束三段，每段一个镜头。',
+      '三、收束：点出'+g+'班级共识（互助 / 仪式感 / 家校同频）。',
+      '四、互动：评论区抛轻问题——你最想看哪段？'];
+  }
+  return {title, body:paras.join('\n'),
+    tags:platform==='xhs'?('#北京高中生活 #'+g+' #'+tagK+' #高中生真实记录 #校园vlog'):('#北京高中 #'+g+' #'+tagK+' #班级宣传 #校园'),
+    cover:'封面文案：「'+k+'」· '+g+'；副行「现场感 · 不摆拍」'};
+}
+function render(art){
+  const el=document.getElementById('result'), empty=document.getElementById('empty');
+  empty.style.display='none'; el.style.display='block';
+  el.innerHTML='<div class="meta"><span class="tag">'+gLabel()+'</span><span class="tag">'+pLabel()+'</span><span class="tag">'+MODES.find(m=>m.id===mode).label+'</span></div><h2 class="out-title"></h2><div class="body"></div><div class="tags"></div><div class="cover"></div>';
+  el.querySelector('.out-title').textContent=art.title;
+  el.querySelector('.body').textContent=art.body;
+  el.querySelector('.tags').textContent='话题标签：'+art.tags;
+  el.querySelector('.cover').textContent='封面文案：'+art.cover;
+  lastText=art.title+'\n\n'+art.body+'\n\n话题标签：'+art.tags+'\n封面文案：'+art.cover;
+}
+document.getElementById('genBtn').onclick=async()=>{
+  const btn=document.getElementById('genBtn'), loading=document.getElementById('loading');
+  btn.disabled=true; loading.classList.add('on');
+  await new Promise(r=>setTimeout(r,900+Math.random()*500));
+  render(buildArticle(document.getElementById('topic').value));
+  btn.disabled=false; loading.classList.remove('on');
+};
+document.getElementById('copyBtn').onclick=async()=>{
+  if(!lastText){toast('先生成一篇再复制');return;}
+  try{await navigator.clipboard.writeText(lastText);toast('已复制全文');}catch{toast('复制失败，请手动选择文本');}
+};
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),1600);}
+document.getElementById('topic').value='运动会入场式幕后';
+</script>
+</body>
+</html>
