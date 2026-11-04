@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="description" content="北京高中班级新媒体工作台：素材、一稿多投、热点样本、违禁词、配图、草稿和发布助手。纯静态演示，不登录、不代发。" />
+<meta name="description" content="K12 新媒体工作台：面向幼儿到高中的内容运营、引流、续养续费、年信和报名转化。素材、一稿多投、热点样本、违禁词、配图、草稿和发布助手。纯静态演示，不登录、不代发。" />
 <meta name="theme-color" content="#FDF8EF" />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%23F2762E'/%3E%3C/svg%3E" />
-<title>北京高中班级新媒体工作台</title>
+<title>K12 新媒体工作台</title>
 <style>
 :root{
   --bg1:#FDF8EF; --bg2:#F7EFDD; --bg3:#EAF3EC;
@@ -148,10 +148,10 @@ body.nav-open{overflow:hidden}
 <div class="app">
   <aside id="side" aria-label="工作台导航">
     <div class="logo">
-      <div class="dot" aria-hidden="true">班</div>
+      <div class="dot" aria-hidden="true">K</div>
       <div>
-        <b>班级新媒体</b>
-        <small>北京高中 · 工作台</small>
+        <b>K12 新媒体</b>
+        <small>幼儿到高中 · 工作台</small>
       </div>
     </div>
     <nav id="nav">
@@ -166,8 +166,8 @@ body.nav-open{overflow:hidden}
       <button type="button" class="nav-item" data-go="tools"><span class="ic" aria-hidden="true">具</span>工具&技能</button>
     </nav>
     <button type="button" class="side-foot" data-go="account">
-      <span class="avatar" id="avatar">班</span>
-      <span><strong id="footName">未填写班级</strong><small id="footMeta">本地</small></span>
+      <span class="avatar" id="avatar">K</span>
+      <span><strong id="footName">未填写项目</strong><small id="footMeta">本地</small></span>
     </button>
   </aside>
   <button type="button" id="mask" data-act="closemenu" aria-label="关闭导航"></button>
@@ -178,7 +178,7 @@ body.nav-open{overflow:hidden}
       <span class="grow"></span>
       <span class="demo-pill">静态演示 · 无接口</span>
       <button type="button" class="tiny" data-act="fresh">清空素材</button>
-      <button type="button" class="who" id="who" data-go="account">设置班级</button>
+      <button type="button" class="who" id="who" data-go="account">设置项目</button>
     </header>
     <main id="view"></main>
   </div>
@@ -196,11 +196,11 @@ var LOOP = [['intake','1 素材'], ['pack','2 一稿多投'], ['check','3 审核
 var FANS_OPTS = [['1000','粉丝 ≤ 1000'], ['5000','粉丝 ≤ 5000'], ['20000','粉丝 ≤ 2万'], ['0','全部样本']];
 var ACT_OPTS = [['0','互动不限'], ['1000','互动 ≥ 1000'], ['5000','互动 ≥ 5000'], ['20000','互动 ≥ 2万']];
 var PLAT_GUESS = ['小红书','公众号','抖音','视频号','B站','快手','未识别'];
-var PROFILE_KEY = 'bjcm-profile-v2';
-var DRAFT_KEY = 'bjcm-drafts-v2';
-var WORD_KEY = 'bjcm-words-v2';
-var SESSION_KEY = 'bjcm-session-v2';
-var DEFAULT_PROFILE = {className:'', grade:'g1', platforms:['xhs','sph','dy','mp'], voice:'具体、温暖，像班刊。少鸡汤，不晒成绩，不导流。'};
+var PROFILE_KEY = 'k12wb-profile-v1';
+var DRAFT_KEY = 'k12wb-drafts-v1';
+var WORD_KEY = 'k12wb-words-v1';
+var SESSION_KEY = 'k12wb-session-v1';
+var DEFAULT_PROFILE = {brand:'', grade:'pl', platforms:['xhs','sph','dy','mp'], voice:'具体、清楚，像在跟家长把一件事说完。少空话，不承诺结果，不伪造热度。'};
 var HOT_META = {
   xhs: ['小红书', '点一条填入素材 · 非实时'],
   dy: ['抖音', '点一条填入素材 · 非实时'],
@@ -211,7 +211,8 @@ var HOT_META = {
 var state = {
   view: 'intake',
   source: null,
-  grade: 'g1',
+  grade: 'pl',
+  goal: 'ops',
   targets: null,
   pack: null,
   packKey: '',
@@ -220,8 +221,9 @@ var state = {
   checkResult: null,
   hotMode: 'fit',
   hotQ: '',
-  lf: {maxFans:5000, minAct:0, grade:'all', kw:''},
-  weekGrade: 'g1',
+  hotGoal: 'all',
+  lf: {maxFans:5000, minAct:0, grade:'all', goal:'all', kw:''},
+  weekGrade: 'pl',
   weekTheme: '',
   coverTitle: '',
   publishLog: {},
@@ -262,38 +264,17 @@ function defaultTargets() {
 }
 function loadProfile() {
   var saved = localGet(PROFILE_KEY, null);
-  if (!saved) {
-    var old = localGet('bjcm-profile-v1', null);
-    if (old && typeof old === 'object') {
-      var map = {douyin:'dy', channels:'sph', mp:'mp', kuaishou:'ks', bilibili:'bili', xhs:'xhs'};
-      saved = {
-        className: old.className || '',
-        grade: old.grade || 'g1',
-        voice: old.voice || DEFAULT_PROFILE.voice,
-        platforms: (old.platforms || []).map(function (id) { return map[id] || id; })
-      };
-    }
-  }
   var p = Object.assign({}, DEFAULT_PROFILE, saved || {});
-  if (!BJCM.GRADES.some(function (g) { return g.id === p.grade; })) p.grade = 'g1';
+  if (!BJCM.GRADES.some(function (g) { return g.id === p.grade; })) p.grade = 'pl';
   var known = BJCM.PLATFORMS.map(function (x) { return x.id; });
   p.platforms = (Array.isArray(p.platforms) ? p.platforms : []).filter(function (id) { return known.indexOf(id) >= 0; });
   if (!p.platforms.length) p.platforms = DEFAULT_PROFILE.platforms.slice();
-  p.className = String(p.className || '').slice(0, 24);
+  p.brand = String(p.brand || '').slice(0, 24);
   p.voice = String(p.voice == null ? DEFAULT_PROFILE.voice : p.voice).slice(0, 240);
   return p;
 }
 function loadDrafts() {
-  var arr = localGet(DRAFT_KEY, null);
-  if (arr == null) {
-    var old = localGet('bjcm-drafts-v1', []);
-    arr = Array.isArray(old) ? old.filter(function (d) { return d && d.title; }).map(function (d) {
-      return {
-        id: d.id || uid(), at: d.at || 0, title: d.title, grade: d.grade || 'g1', legacy: true, pack: null,
-        source: {kind:'text', url:'', platform:'公众号', title:d.title, author:'旧版草稿', content:d.body || d.content || '', demo:false, parsed:true, note:'从上一版知识库导入', images:[]}
-      };
-    }) : [];
-  }
+  var arr = localGet(DRAFT_KEY, []);
   return Array.isArray(arr) ? arr.filter(function (d) { return d && d.id; }).slice(0, 40) : [];
 }
 function loadWords() {
@@ -302,14 +283,14 @@ function loadWords() {
 }
 function sourceKey() {
   var flags = BJCM.TARGETS.map(function (t) { return state.targets[t.id] ? '1' : '0'; }).join('');
-  return [state.source.title, state.source.content, state.grade, state.profile.className, state.profile.voice, flags].join('\u0001');
+  return [state.source.title, state.source.content, state.grade, state.goal, state.profile.brand, state.profile.voice, flags].join('\u0001');
 }
 function persist() {
   try {
     sessionStorage.setItem(SESSION_KEY, JSON.stringify({
-      view: state.view, source: state.source, grade: state.grade, targets: state.targets,
+      view: state.view, source: state.source, grade: state.grade, goal: state.goal, targets: state.targets,
       pack: state.pack, packKey: state.packKey, audit: state.audit, checkText: state.checkText,
-      checkResult: state.checkResult, hotMode: state.hotMode, hotQ: state.hotQ, lf: state.lf,
+      checkResult: state.checkResult, hotMode: state.hotMode, hotQ: state.hotQ, hotGoal: state.hotGoal, lf: state.lf,
       weekGrade: state.weekGrade, weekTheme: state.weekTheme, coverTitle: state.coverTitle,
       publishLog: state.publishLog, checks: state.checks
     }));
@@ -321,6 +302,7 @@ function restoreSession() {
   if (!data || typeof data !== 'object') return;
   if (data.source && typeof data.source === 'object') state.source = Object.assign(defaultSource(), data.source);
   if (BJCM.GRADES.some(function (g) { return g.id === data.grade; })) state.grade = data.grade;
+  if (BJCM.FUNNELS.some(function (f) { return f.id === data.goal; })) state.goal = data.goal;
   if (data.targets && typeof data.targets === 'object') state.targets = Object.assign(defaultTargets(), data.targets);
   if (data.pack && typeof data.pack === 'object') state.pack = data.pack;
   if (typeof data.packKey === 'string') state.packKey = data.packKey;
@@ -329,7 +311,12 @@ function restoreSession() {
   if (data.checkResult) state.checkResult = data.checkResult;
   if (data.hotMode === 'fit' || data.hotMode === 'all') state.hotMode = data.hotMode;
   if (typeof data.hotQ === 'string') state.hotQ = data.hotQ.slice(0, 40);
-  if (data.lf && typeof data.lf === 'object') state.lf = Object.assign({maxFans:5000, minAct:0, grade:'all', kw:''}, data.lf);
+  if (data.hotGoal === 'all' || BJCM.FUNNELS.some(function (f) { return f.id === data.hotGoal; })) state.hotGoal = data.hotGoal;
+  if (data.lf && typeof data.lf === 'object') {
+    state.lf = Object.assign({maxFans:5000, minAct:0, grade:'all', goal:'all', kw:''}, data.lf);
+    if (state.lf.grade !== 'all' && !BJCM.GRADES.some(function (g) { return g.id === state.lf.grade; })) state.lf.grade = 'all';
+    if (state.lf.goal !== 'all' && !BJCM.FUNNELS.some(function (f) { return f.id === state.lf.goal; })) state.lf.goal = 'all';
+  }
   if (BJCM.GRADES.some(function (g) { return g.id === data.weekGrade; })) state.weekGrade = data.weekGrade;
   if (typeof data.weekTheme === 'string') state.weekTheme = data.weekTheme.slice(0, 40);
   if (typeof data.coverTitle === 'string') state.coverTitle = data.coverTitle.slice(0, 24);
@@ -395,13 +382,13 @@ function pills(items, current, act) {
   }).join('') + '</div>';
 }
 function footer() {
-  return '<p class="foot-note">北京高中班级新媒体工作台 · 新高一 / 高一 / 高二 / 高三 · 纯静态演示 · 不登录 · 不代发</p>';
+  return '<p class="foot-note">K12 新媒体工作台 · 幼儿到高中 · 内容运营 / 引流 / 续养 / 年信 / 报名 · 纯静态演示 · 不登录 · 不代发</p>';
 }
 function selectedTargets() {
   return BJCM.TARGETS.map(function (t) { return t.id; }).filter(function (id) { return state.targets[id]; });
 }
 function hotQuery() {
-  return {text: state.hotQ, grade: state.hotMode === 'fit' ? state.grade : 'all'};
+  return {text: state.hotQ, grade: state.hotMode === 'fit' ? state.grade : 'all', goal: state.hotGoal || 'all'};
 }
 function packPlain() {
   if (!state.pack) return '';
@@ -420,7 +407,7 @@ function syncDom() {
     'pack-body': function (v) { state.source.content = v; },
     'check-text': function (v) { state.checkText = v; },
     'hot-q': function (v) { state.hotQ = v.slice(0, 40); },
-    'pf-class': function (v) { state.profile.className = v.slice(0, 24); },
+    'pf-brand': function (v) { state.profile.brand = v.slice(0, 24); },
     'pf-voice': function (v) { state.profile.voice = v.slice(0, 240); },
     'cover-title': function (v) { state.coverTitle = v.slice(0, 24); },
     'week-theme': function (v) { state.weekTheme = v.slice(0, 40); },
@@ -450,7 +437,7 @@ function hydrate() {
   var values = {
     'src-url': state.source.url, 'src-title': state.source.title, 'pack-title': state.source.title,
     'src-author': state.source.author, 'src-body': state.source.content, 'pack-body': state.source.content,
-    'check-text': state.checkText, 'hot-q': state.hotQ, 'pf-class': state.profile.className,
+    'check-text': state.checkText, 'hot-q': state.hotQ, 'pf-brand': state.profile.brand,
     'pf-voice': state.profile.voice, 'cover-title': state.coverTitle, 'week-theme': state.weekTheme
   };
   Object.keys(values).forEach(function (id) {
@@ -475,15 +462,15 @@ function updateChrome() {
     if (on) n.setAttribute('aria-current', 'page');
     else n.removeAttribute('aria-current');
   });
-  var name = (state.profile.className || '').trim() || '未填写班级';
+  var name = (state.profile.brand || '').trim() || '未填写项目';
   document.getElementById('footName').textContent = name;
   document.getElementById('footMeta').textContent = BJCM.gradeById(state.profile.grade).label + ' · 本地';
   document.getElementById('who').textContent = name + ' · ' + BJCM.gradeById(state.grade).label;
-  document.getElementById('avatar').textContent = (state.profile.className || '班').trim().charAt(0) || '班';
+  document.getElementById('avatar').textContent = (state.profile.brand || 'K').trim().charAt(0) || 'K';
   var badge = document.getElementById('draftBadge');
   badge.textContent = state.drafts.length ? String(state.drafts.length) : '';
   badge.hidden = !state.drafts.length;
-  document.title = '北京高中班级新媒体工作台 · ' + (meta ? meta[1] : '');
+  document.title = 'K12 新媒体工作台 · ' + (meta ? meta[1] : '');
 }
 function stepper() {
   return '<div class="stepper">' + LOOP.map(function (s) {
@@ -493,9 +480,9 @@ function stepper() {
 function fieldBlock() {
   return '<label class="label" for="src-platform">平台（可改）</label><select id="src-platform">' +
     PLAT_GUESS.map(function (p) { return '<option>' + esc(p) + '</option>'; }).join('') + '</select>' +
-    '<label class="label" for="src-title">标题</label><input id="src-title" type="text" maxlength="80" placeholder="例如：高一家长会后的走廊">' +
-    '<label class="label" for="src-author">作者 / 来源</label><input id="src-author" type="text" maxlength="40" placeholder="班级新媒体 / 同学投稿">' +
-    '<label class="label" for="src-body">正文</label><textarea id="src-body" maxlength="4000" placeholder="贴上真实经过。离线模板会抓住前两句原话，不会把同一段复制到五个渠道。"></textarea>';
+    '<label class="label" for="src-title">标题</label><input id="src-title" type="text" maxlength="80" placeholder="例如：幼儿开放日，家长会问的三件事">' +
+    '<label class="label" for="src-author">作者 / 来源</label><input id="src-author" type="text" maxlength="40" placeholder="内容运营 / 市场">' +
+    '<label class="label" for="src-body">正文</label><textarea id="src-body" maxlength="4000" placeholder="贴上真实素材。离线模板会抓住前两句原话，不会把同一段复制到五个渠道。"></textarea>';
 }
 function viewIntake() {
   var g = BJCM.gradeById(state.grade);
@@ -507,15 +494,18 @@ function viewIntake() {
       banner += '<div class="slots">' + state.source.images.map(function (s) { return '<i>' + esc(s) + '</i>'; }).join('') + '</div>';
     }
   }
-  var examples = ['军训第一周', '家长会后的走廊', '运动会入场式幕后', '一模后班级加油站'].map(function (ex) {
-    return '<button type="button" class="tiny" data-act="example" data-topic="' + esc(ex) + '">' + esc(ex) + '</button>';
+  var f = BJCM.goalById(state.goal);
+  var examples = BJCM.EXAMPLES.map(function (ex) {
+    return '<button type="button" class="tiny" data-act="example" data-topic="' + esc(ex.topic) + '" data-grade="' + esc(ex.grade) + '" data-goal="' + esc(ex.goal) + '">' + esc(ex.label) + '</button>';
   }).join('');
   var jumps = [['hot','热点雷达','四栏样本和低粉雷达'], ['pack','一稿多投','五个渠道各写一版'], ['check','违禁词','本地词库'], ['cover','做配图','大纲和封面大字'], ['drafts','草稿箱','存在这台浏览器'], ['publish','发布助手','复制后人工发布']];
-  return '<section><h2 id="view-title" tabindex="-1">今天想记录班级的哪一件事？</h2>' +
-    '<p class="lead">先放素材。链接不会被打开，只会给出标明「演示」的解析；现成文案可以直接贴。年级会改变后面五个渠道的语气。</p>' +
+  return '<section><h2 id="view-title" tabindex="-1">今天这条内容，服务漏斗的哪一环？</h2>' +
+    '<p class="lead">给 K12 市场和运营用，从幼儿写到高中。一条素材先定学段，再定它是内容运营、引流、续养/续费、年信，还是报名转化。链接不会被打开，只会给出标明「演示」的解析。</p>' +
     stepper() + '</section>' +
-    '<section class="card block"><div class="label">年级</div>' + pills(BJCM.GRADES, state.grade, 'grade') +
+    '<section class="card block"><div class="label">学段 · 内容给谁看</div>' + pills(BJCM.GRADES, state.grade, 'grade') +
     '<p class="hint">' + esc(g.label) + ' · 给' + esc(g.audience) + ' · ' + esc(g.tone) + ' · ' + esc(g.avoid) + '</p>' +
+    '<div class="label">漏斗环节 · 这条稿只走一环</div>' + pills(BJCM.FUNNELS, state.goal, 'goal') +
+    '<p class="hint">' + esc(f.label) + ' · ' + esc(f.blurb) + ' · ' + esc(f.tone) + ' · ' + esc(f.avoid) + '</p>' +
     '<div class="pills"><button type="button" class="pill' + (linkOn ? ' on' : '') + '" data-act="kind" data-id="link">粘贴链接</button>' +
     '<button type="button" class="pill' + (!linkOn ? ' on' : '') + '" data-act="kind" data-id="text">粘贴现成文案</button></div>' +
     (linkOn
@@ -542,16 +532,19 @@ function viewPack() {
   if (!state.pack) {
     head = '<div class="empty"><b>还没有五版文案</b><p>写好标题或正文后点生成。五个渠道会各写各的，不会复制同一段话。</p></div>';
   } else {
-    if (state.audit && state.audit.ok) head += '<div class="banner green">五版正文互不相同。私聊保留 {昵称} 和 {年级}。朋友圈不带 #。这只说明格式过了本地检查。</div>';
+    if (state.audit && state.audit.ok) head += '<div class="banner green">五版正文互不相同。私聊保留 {昵称} 和 {学段}。朋友圈不带 #。这只说明格式过了本地检查。</div>';
     else if (state.audit) head += '<div class="banner bad">格式提醒：' + esc(state.audit.issues.join('；')) + '</div>';
-    if (demoWarn) head += '<div class="banner">正文里还有演示占位。发出去之前改成你们班的真实经过。</div>';
+    if (demoWarn) head += '<div class="banner">正文里还有演示占位。发出去之前改成你们项目的真实素材。</div>';
     if (state.checkResult) head += riskBox(state.checkResult) ;
-    head += '<p id="stale-note" class="hint"' + (stale ? '' : ' hidden') + '>年级、班级或正文已经变了。再点一次生成，语气才会跟上。</p>';
+    head += '<p id="stale-note" class="hint"' + (stale ? '' : ' hidden') + '>学段、漏斗、项目或正文已经变了。再点一次生成，口径才会跟上。</p>';
     head += Object.keys(state.pack).map(channelCard).join('');
   }
-  return '<h2 id="view-title" tabindex="-1">一稿多投</h2><p class="lead">一份素材，本地写出小红书图文、视频号、抖音、朋友圈和私聊话术。不调用写作接口。</p>' +
-    '<section class="card"><div class="label">年级 · 会改语气和选题口径</div>' + pills(BJCM.GRADES, state.grade, 'grade') +
+  var f = BJCM.goalById(state.goal);
+  return '<h2 id="view-title" tabindex="-1">一稿多投</h2><p class="lead">一份素材，按学段和漏斗环节，本地写出小红书图文、视频号、抖音、朋友圈和私聊话术。不调用写作接口。</p>' +
+    '<section class="card"><div class="label">学段 · 会改用词和语气</div>' + pills(BJCM.GRADES, state.grade, 'grade') +
     '<p class="hint">' + esc(g.label) + ' · ' + esc(g.tone) + ' · ' + esc(g.avoid) + '</p>' +
+    '<div class="label">漏斗环节</div>' + pills(BJCM.FUNNELS, state.goal, 'goal') +
+    '<p class="hint">' + esc(f.label) + ' · ' + esc(f.blurb) + ' · ' + esc(f.avoid) + '</p>' +
     '<div class="label">渠道</div>' + targetPills +
     '<label class="label" for="pack-title">素材标题</label><input id="pack-title" type="text" maxlength="80" />' +
     '<label class="label" for="pack-body">素材正文</label><textarea id="pack-body" maxlength="4000"></textarea>' +
@@ -594,28 +587,37 @@ function viewHot() {
   var kwOpts = '<option value="">全部关键词</option>' + BJCM.lowKeywords().map(function (k) {
     return '<option value="' + esc(k) + '">' + esc(k) + '</option>';
   }).join('');
+  var goalPills = '<div class="pills" style="margin-top:8px"><button type="button" class="pill' + (state.hotGoal === 'all' ? ' on' : '') + '" data-act="hot-goal" data-id="all">全部环节</button>' +
+    BJCM.FUNNELS.map(function (f) {
+      return '<button type="button" class="pill' + (state.hotGoal === f.id ? ' on' : '') + '" data-act="hot-goal" data-id="' + f.id + '">' + esc(f.label) + '</button>';
+    }).join('') + '</div>';
+  var lfGoal = '<div class="pills" style="margin-top:8px"><button type="button" class="pill' + ((state.lf.goal || 'all') === 'all' ? ' on' : '') + '" data-act="lf-goal" data-id="all">全部环节</button>' +
+    BJCM.FUNNELS.map(function (f) {
+      return '<button type="button" class="pill' + (state.lf.goal === f.id ? ' on' : '') + '" data-act="lf-goal" data-id="' + f.id + '">' + esc(f.label) + '</button>';
+    }).join('') + '</div>';
   return '<h2 id="view-title" tabindex="-1">热点雷达</h2>' +
-    '<p class="lead">四栏和低粉卡片都是离线样本，封面是示意色块。栏顶的「演示数据」表示这不是平台实时热榜。</p>' +
+    '<p class="lead">四栏和低粉卡片都是离线样本，封面是示意色块。用来练内容运营、引流、续养/续费、年信和报名转化的选题，不是平台实时热榜。</p>' +
     '<div class="banner"><span class="demo">演示数据</span> 热点 ' + hotCount + ' 条 · 低粉样本 ' + BJCM.LOW.length + ' 条。数字是为了练习筛选，不是真实账号。</div>' +
-    '<section class="card"><div class="row"><input id="hot-q" type="search" maxlength="40" placeholder="筛选标题，例如家长会、一模" /><button type="button" class="btn" data-act="repaint">筛选</button></div>' +
-    '<div class="pills" style="margin-top:10px"><button type="button" class="pill' + (state.hotMode === 'fit' ? ' on' : '') + '" data-act="hot-mode" data-id="fit">适合当前年级</button>' +
-    '<button type="button" class="pill' + (state.hotMode === 'all' ? ' on' : '') + '" data-act="hot-mode" data-id="all">全部年级</button></div>' +
-    '<p class="hint">当前年级：' + esc(BJCM.gradeById(state.grade).label) + '。改年级会同时影响一稿多投的语气。</p>' +
+    '<section class="card"><div class="row"><input id="hot-q" type="search" maxlength="40" placeholder="筛选标题，例如体验课、年信、报名" /><button type="button" class="btn" data-act="repaint">筛选</button></div>' +
+    '<div class="pills" style="margin-top:10px"><button type="button" class="pill' + (state.hotMode === 'fit' ? ' on' : '') + '" data-act="hot-mode" data-id="fit">适合当前学段</button>' +
+    '<button type="button" class="pill' + (state.hotMode === 'all' ? ' on' : '') + '" data-act="hot-mode" data-id="all">全部学段</button></div>' +
+    '<p class="hint">当前学段：' + esc(BJCM.gradeById(state.grade).label) + '。改学段会同时影响一稿多投的用词。</p>' +
     pills(BJCM.GRADES, state.grade, 'grade') +
+    '<div class="label">漏斗环节</div>' + goalPills +
     '</section><div class="hot-grid block" id="hot-grid"></div>' +
-    '<h3 class="label">低粉爆款雷达</h3><p class="hint">粉丝少但互动高，用来看结构。样本账号是虚构的班级记录名。</p>' +
+    '<h3 class="label">低粉爆款雷达</h3><p class="hint">粉丝少但互动高，用来看结构。样本账号是虚构的机构内容号。</p>' +
     '<div class="pills">' + FANS_OPTS.map(function (o) {
       return '<button type="button" class="pill' + (String(state.lf.maxFans) === o[0] ? ' on' : '') + '" data-act="lf-fans" data-id="' + o[0] + '">' + esc(o[1]) + '</button>';
     }).join('') + '</div><div class="pills" style="margin-top:8px">' + ACT_OPTS.map(function (o) {
       return '<button type="button" class="pill' + (String(state.lf.minAct) === o[0] ? ' on' : '') + '" data-act="lf-min" data-id="' + o[0] + '">' + esc(o[1]) + '</button>';
     }).join('') + '</div><div class="row" style="margin-top:8px"><select id="lf-kw">' + kwOpts + '</select></div>' +
-    '<div class="pills" style="margin-top:8px"><button type="button" class="pill' + (state.lf.grade === 'all' ? ' on' : '') + '" data-act="lf-grade" data-id="all">全部年级</button>' +
+    '<div class="pills" style="margin-top:8px"><button type="button" class="pill' + (state.lf.grade === 'all' ? ' on' : '') + '" data-act="lf-grade" data-id="all">全部学段</button>' +
     BJCM.GRADES.map(function (g) {
       return '<button type="button" class="pill' + (state.lf.grade === g.id ? ' on' : '') + '" data-act="lf-grade" data-id="' + g.id + '">' + esc(g.label) + '</button>';
-    }).join('') + '</div><div class="lf-grid block" id="lf-grid"></div>' +
-    '<h3 class="label">班级节点 · 排一周</h3><p class="hint">本地拍摄日历，不是学校官方校历。</p>' +
+    }).join('') + '</div>' + lfGoal + '<div class="lf-grid block" id="lf-grid"></div>' +
+    '<h3 class="label">内容日历 · 排一周</h3><p class="hint">按学段排一周，七天走过内容运营、引流、续养、年信和报名。本地日历，不是平台热榜。</p>' +
     pills(BJCM.GRADES, state.weekGrade, 'week-grade') +
-    '<label class="label" for="week-theme">主题（可不填）</label><input id="week-theme" type="text" maxlength="40" placeholder="例如：家长会" />' +
+    '<label class="label" for="week-theme">主题（可不填）</label><input id="week-theme" type="text" maxlength="40" placeholder="例如：体验课、续费、年信" />' +
     '<div class="grid2" id="week-grid"></div>';
 }
 function paintDynamic() {
@@ -631,7 +633,7 @@ function paintHot() {
     var items = BJCM.filterHot(key, hotQuery());
     var list = items.length ? items.map(function (it, i) {
       return '<button type="button" class="h-item" data-act="use-hot" data-col="' + key + '" data-i="' + i + '"><span class="no">' + (i + 1) + '</span><span class="hi"><b>' + esc(it.title) + '</b><small class="k">' + esc(it.sub) + ' · ' + esc(it.hot) + '</small></span></button>';
-    }).join('') : '<p class="empty">这个年级下没有演示条目</p>';
+    }).join('') : '<p class="empty">这个学段或环节下没有演示条目</p>';
     return '<section class="hot-col"><header><b>' + esc(meta[0]) + '</b><span class="demo">演示数据</span></header><p class="sub">' + esc(meta[1]) + '</p><div class="hot-list">' + list + '</div></section>';
   }).join('');
 }
@@ -642,6 +644,7 @@ function paintLow() {
     maxFans: Number(state.lf.maxFans),
     minAct: Number(state.lf.minAct),
     grade: state.lf.grade,
+    goal: state.lf.goal || 'all',
     kw: state.lf.kw,
     text: state.hotQ
   });
@@ -651,7 +654,7 @@ function paintLow() {
   }
   box.innerHTML = items.map(function (it) {
     var act = it.like + it.save + it.comment;
-    return '<article class="lf-card"><div class="lf-cover" style="background:linear-gradient(160deg,hsl(' + it.hue + ' 62% 86%),hsl(' + ((it.hue + 28) % 360) + ' 45% 62%))"><span class="demo">演示封面</span><b>' + esc(BJCM.clampChars(it.title, 12)) + '</b></div><div class="lf-body"><p class="k">' + esc(it.plat) + ' · ' + esc(BJCM.gradeById(it.grade).label) + ' · ' + esc(it.kw) + '</p><h3 style="margin:4px 0;font-size:1rem">' + esc(it.title) + '</h3><p class="hint">' + esc(it.author) + ' · ' + esc(it.blurb) + '</p><div class="stats"><span>粉丝 <b>' + it.fans + '</b></span><span>赞 <b>' + it.like + '</b></span><span>藏 <b>' + it.save + '</b></span><span>评 <b>' + it.comment + '</b></span><span>互动 <b>' + act + '</b></span></div><button type="button" class="tiny" data-act="use-low" data-id="' + esc(it.id) + '">用作素材</button></div></article>';
+    return '<article class="lf-card"><div class="lf-cover" style="background:linear-gradient(160deg,hsl(' + it.hue + ' 62% 86%),hsl(' + ((it.hue + 28) % 360) + ' 45% 62%))"><span class="demo">演示封面</span><b>' + esc(BJCM.clampChars(it.title, 12)) + '</b></div><div class="lf-body"><p class="k">' + esc(it.plat) + ' · ' + esc(BJCM.gradeById(it.grade).label) + ' · ' + esc(BJCM.goalById(it.goal).label) + ' · ' + esc(it.kw) + '</p><h3 style="margin:4px 0;font-size:1rem">' + esc(it.title) + '</h3><p class="hint">' + esc(it.author) + ' · ' + esc(it.blurb) + '</p><div class="stats"><span>粉丝 <b>' + it.fans + '</b></span><span>赞 <b>' + it.like + '</b></span><span>藏 <b>' + it.save + '</b></span><span>评 <b>' + it.comment + '</b></span><span>互动 <b>' + act + '</b></span></div><button type="button" class="tiny" data-act="use-low" data-id="' + esc(it.id) + '">用作素材</button></div></article>';
   }).join('');
 }
 function paintWeek() {
@@ -665,30 +668,31 @@ function paintWeek() {
 function viewCheck() {
   var words = state.words.length ? state.words.map(function (w, i) {
     return '<span class="hit">' + esc(w) + ' <button type="button" class="tiny" data-act="del-word" data-i="' + i + '">移除</button></span>';
-  }).join('') : '<p class="hint">还没有自添词。内置词库已经覆盖保过、泄题、身份证、最强、震惊这类说法。</p>';
+  }).join('') : '<p class="hint">还没有自添词。内置词库已经覆盖保过、保录取、内部名额、身份证、最强、震惊这类说法。</p>';
   var result = state.checkResult ? riskBox(state.checkResult) : '<div class="empty"><b>还没有审核</b><p>粘贴标题和正文，或载入刚刚生成的五版。</p></div>';
-  return '<h2 id="view-title" tabindex="-1">违禁词</h2><p class="lead">只用这台浏览器里的词库做字符串匹配，不调用敏感词接口。命中只是提醒，改不改由你和老师决定。</p>' +
+  return '<h2 id="view-title" tabindex="-1">违禁词</h2><p class="lead">只用这台浏览器里的词库做字符串匹配，不调用敏感词接口。命中只是提醒，改不改由你和内容审核决定。</p>' +
     '<section class="card"><label class="label" for="check-text">待检文本</label><textarea id="check-text" maxlength="8000"></textarea>' +
     '<div class="actions"><button type="button" class="btn" data-act="check-run">开始审核</button><button type="button" class="btn ghost" data-act="load-pack-text">载入当前五版</button></div></section>' +
     '<div class="block">' + result + '</div>' +
-    '<section class="card block"><h3 style="margin:0 0 8px">自添敏感词</h3><div class="row"><input id="word-in" type="text" maxlength="12" placeholder="2–12 个字，例如校外培训广告" /><button type="button" class="btn ghost" data-act="add-word">添加</button></div><div style="margin-top:8px">' + words + '</div></section>';
+    '<section class="card block"><h3 style="margin:0 0 8px">自添敏感词</h3><div class="row"><input id="word-in" type="text" maxlength="12" placeholder="2–12 个字，例如保录取、内部名额" /><button type="button" class="btn ghost" data-act="add-word">添加</button></div><div style="margin-top:8px">' + words + '</div></section>';
 }
 function currentOutline() {
   return BJCM.outlineFor({
     title: state.source.title,
     content: state.source.content,
     grade: state.grade,
-    className: state.profile.className,
+    goal: state.goal,
+    brand: state.profile.brand,
     voice: state.profile.voice,
     coverTitle: state.coverTitle
   });
 }
 function viewCover() {
   if (!(state.coverTitle || '').trim() && ((state.source.title || '').trim() || (state.source.content || '').trim())) {
-    state.coverTitle = BJCM.clampChars(String(state.source.title || '班级这一周').replace(/^【演示】/, ''), 14);
+    state.coverTitle = BJCM.clampChars(String(state.source.title || '这一周给家长').replace(/^【演示】/, ''), 14);
   }
   if (!(state.source.title || '').trim() && !(state.source.content || '').trim()) {
-    return '<h2 id="view-title" tabindex="-1">做配图</h2><div class="empty"><b>还没有选题</b><p>先在素材入口写下一件事，再来排大纲和封面大字。</p><p><button type="button" class="btn" data-go="intake">去素材入口</button></p></div>';
+    return '<h2 id="view-title" tabindex="-1">做配图</h2><div class="empty"><b>还没有选题</b><p>先在素材入口写下一件要讲给家长或学生的事，再来排大纲和封面大字。</p><p><button type="button" class="btn" data-go="intake">去素材入口</button></p></div>';
   }
   var pages = currentOutline();
   var cards = pages.map(function (p, i) {
@@ -702,7 +706,8 @@ function viewCover() {
 function viewDrafts() {
   var list = state.drafts.length ? state.drafts.map(function (d) {
     var when = d.at ? new Date(d.at).toLocaleString('zh-CN', {hour12:false}) : '更早';
-    return '<article class="lib"><strong>' + esc(d.title || '未命名') + '</strong><p class="hint">' + esc(BJCM.gradeById(d.grade || 'g1').label) + ' · ' + esc(when) + (d.legacy ? ' · 旧版导入' : '') + (d.pack ? ' · 含五版' : ' · 只有正文') + '</p><div class="draft-ops"><button type="button" class="tiny" data-act="load-draft" data-id="' + esc(d.id) + '">续编</button><button type="button" class="tiny" data-act="del-draft" data-id="' + esc(d.id) + '">删除</button></div></article>';
+    var goalLabel = d.goal ? (' · ' + BJCM.goalById(d.goal).label) : '';
+    return '<article class="lib"><strong>' + esc(d.title || '未命名') + '</strong><p class="hint">' + esc(BJCM.gradeById(d.grade || 'pl').label) + goalLabel + ' · ' + esc(when) + (d.pack ? ' · 含五版' : ' · 只有正文') + '</p><div class="draft-ops"><button type="button" class="tiny" data-act="load-draft" data-id="' + esc(d.id) + '">续编</button><button type="button" class="tiny" data-act="del-draft" data-id="' + esc(d.id) + '">删除</button></div></article>';
   }).join('') : '<div class="empty"><b>草稿箱是空的</b><p>在一稿多投里生成之后，点「存入草稿箱」。换浏览器或清除站点数据后会消失。</p></div>';
   return '<h2 id="view-title" tabindex="-1">草稿箱</h2><p class="lead">存在 localStorage。可以续编，也可以删除。</p>' + list;
 }
@@ -744,15 +749,15 @@ function viewAccount() {
     var on = state.profile.platforms.indexOf(p.id) >= 0;
     return '<button type="button" class="pill' + (on ? ' on' : '') + '" data-act="pf-plat" data-id="' + p.id + '" aria-pressed="' + (on ? 'true' : 'false') + '">' + esc(p.label) + '</button>';
   }).join('') + '</div>';
-  return '<h2 id="view-title" tabindex="-1">账号空间</h2><p class="lead">班级名、默认年级、常用平台和口吻记在 localStorage。没有粉丝数，也没有会员等级。</p>' +
-    '<section class="card"><label class="label" for="pf-class">班级名称</label><input id="pf-class" type="text" maxlength="24" placeholder="例如：高一 3 班" />' +
-    '<label class="label" for="pf-grade">默认年级</label><select id="pf-grade">' + BJCM.GRADES.map(function (gr) {
+  return '<h2 id="view-title" tabindex="-1">账号空间</h2><p class="lead">给 K12 市场和运营用。项目名、默认学段、常用平台和口吻记在 localStorage。没有粉丝数，也没有会员等级。学段是这条内容要写给的年龄段。</p>' +
+    '<section class="card"><label class="label" for="pf-brand">项目 / 品牌名称</label><input id="pf-brand" type="text" maxlength="24" placeholder="例如：启明素养 / 城市分校市场" />' +
+    '<label class="label" for="pf-grade">默认学段</label><select id="pf-grade">' + BJCM.GRADES.map(function (gr) {
       return '<option value="' + gr.id + '">' + esc(gr.label) + '</option>';
     }).join('') + '</select>' +
-    '<p class="hint">默认年级给新开的稿用。正在写的这篇是「' + esc(BJCM.gradeById(state.grade).label) + '」。</p>' +
-    '<button type="button" class="tiny" data-act="apply-grade">把默认年级用到当前稿</button>' +
+    '<p class="hint">默认学段给新开的稿用。正在写的这篇是「' + esc(BJCM.gradeById(state.grade).label) + ' · ' + esc(BJCM.goalById(state.goal).label) + '」。</p>' +
+    '<button type="button" class="tiny" data-act="apply-grade">把默认学段用到当前稿</button>' +
     '<div class="label">常用平台</div>' + plats +
-    '<p class="hint">一稿多投仍会默认五个渠道都写。这里的平台只是你们班平时发哪里，热点「适合当前年级」看的是年级不是这份清单。</p>' +
+    '<p class="hint">一稿多投仍会默认五个渠道都写。这里的平台只是平时发到哪里。热点「适合当前学段」看的是学段，不是这份清单。</p>' +
     '<label class="label" for="pf-voice">口吻备注</label><textarea id="pf-voice" maxlength="240"></textarea>' +
     '<p class="hint">' + esc(g.label) + '的建议口径：' + esc(g.tone) + '。' + esc(g.avoid) + '。</p>' +
     '<div class="actions"><button type="button" class="btn" data-act="save-profile">保存偏好</button></div></section>';
@@ -761,9 +766,9 @@ function viewTools() {
   var rows = BJCM.SKILLS.map(function (s) {
     return '<article class="skill"><div class="si" aria-hidden="true">示</div><div><b>' + esc(s.title) + '</b><p class="hint">' + esc(s.text) + '</p><button type="button" class="tiny" data-act="copy-skill" data-id="' + esc(s.id) + '">复制提示</button></div></article>';
   }).join('');
-  return '<h2 id="view-title" tabindex="-1">工具&技能</h2><p class="lead">这些是写在页面里的班级技能卡，复制后当提示用。没有远程技能市场，也不会安装任何东西。</p>' +
+  return '<h2 id="view-title" tabindex="-1">工具&技能</h2><p class="lead">这些是写在页面里的运营技能卡，复制后当提示用。没有远程技能市场，也不会安装任何东西。</p>' +
     '<div class="banner">不做配音、转写、自动填表或付费出图。那些能力如果接上接口，才会离开这个静态页。现在全部可以离线完成的，都在左侧菜单里。</div>' +
-    '<section class="card"><h3 style="margin-top:0">一条内容怎么走完</h3><p>素材入口放入链接或文案 → 一稿多投按年级出五版 → 违禁词看命中 → 做配图只出大纲和提示词 → 草稿箱留档 → 发布助手复制后，由人到小红书、抖音、视频号或微信里点发布。</p></section>' + rows;
+    '<section class="card"><h3 style="margin-top:0">一条内容怎么走完</h3><p>先定学段和漏斗环节：内容运营、引流、续养/续费、年信或报名转化。素材入口放入链接或文案 → 一稿多投出五版 → 违禁词看命中 → 做配图只出大纲和提示词 → 草稿箱留档 → 发布助手复制后，由人到小红书、抖音、视频号或微信里点发布。</p></section>' + rows;
 }
 function refreshStale() {
   var n = document.getElementById('stale-note');
@@ -814,7 +819,8 @@ function generate() {
     title: state.source.title,
     content: state.source.content,
     grade: state.grade,
-    className: state.profile.className,
+    goal: state.goal,
+    brand: state.profile.brand,
     voice: state.profile.voice,
     targets: targets
   });
@@ -833,7 +839,7 @@ function saveDraft() {
   syncDom();
   if (!state.pack) { toast('先生成一稿多投'); return; }
   var draft = {
-    id: uid(), at: Date.now(), title: state.source.title || '未命名', grade: state.grade,
+    id: uid(), at: Date.now(), title: state.source.title || '未命名', grade: state.grade, goal: state.goal,
     source: clone(state.source), targets: clone(state.targets), pack: clone(state.pack),
     packKey: state.packKey, audit: state.audit, checkResult: state.checkResult
   };
@@ -849,6 +855,7 @@ function loadDraft(id) {
   if (!d) return;
   state.source = Object.assign(defaultSource(), d.source || {});
   if (BJCM.GRADES.some(function (g) { return g.id === d.grade; })) state.grade = d.grade;
+  if (BJCM.FUNNELS.some(function (f) { return f.id === d.goal; })) state.goal = d.goal;
   state.targets = Object.assign(defaultTargets(), d.targets || {});
   state.pack = d.pack || null;
   state.packKey = d.packKey || (state.pack ? sourceKey() : '');
@@ -895,9 +902,10 @@ function useHot(col, index) {
   var it = items[index];
   if (!it) return;
   if (it.grades && it.grades.indexOf(state.grade) < 0) state.grade = it.grades[0];
+  if (it.goal && BJCM.FUNNELS.some(function (f) { return f.id === it.goal; })) state.goal = it.goal;
   fillMaterial({
     kind: 'text', platform: HOT_META[col][0], title: it.title, author: '演示热点样本',
-    content: it.blurb + '\n\n（离线热点样本，请改成你们班的真实经过。不要把「演示热度」写成真实数据。）'
+    content: it.blurb + '\n\n（离线热点样本，请改成你们项目的真实素材。不要把「演示热度」写成真实数据。）'
   }, '来自热点' + HOT_META[col][0] + '栏 · 演示数据 · 未联网');
 }
 function useLow(id) {
@@ -905,9 +913,10 @@ function useLow(id) {
   BJCM.LOW.forEach(function (row) { if (row.id === id) it = row; });
   if (!it) return;
   state.grade = it.grade;
+  if (it.goal && BJCM.FUNNELS.some(function (f) { return f.id === it.goal; })) state.goal = it.goal;
   fillMaterial({
     kind: 'text', platform: it.plat, title: it.title, author: it.author,
-    content: it.blurb + '\n\n（低粉样本是虚构班级账号，赞藏评只用于筛选练习。）'
+    content: it.blurb + '\n\n（低粉样本是虚构的机构内容号，赞藏评只用于筛选练习。）'
   }, '来自低粉雷达 · 演示数据 · 未联网');
 }
 function useWeek(index) {
@@ -915,10 +924,11 @@ function useWeek(index) {
   if (!day) return;
   var g = BJCM.gradeById(state.weekGrade);
   state.grade = state.weekGrade;
+  if (day.goal && BJCM.FUNNELS.some(function (f) { return f.id === day.goal; })) state.goal = day.goal;
   fillMaterial({
-    kind: 'text', platform: '小红书', title: day.title, author: '选题日历',
-    content: day.angle + '。年级口径：' + g.tone + '。' + g.avoid + '。请补上你们班的一句原话。'
-  }, '来自本地选题日历，不是平台热榜。');
+    kind: 'text', platform: '小红书', title: day.title, author: '内容日历',
+    content: day.angle + '。学段口径：' + g.tone + '。' + g.avoid + '。漏斗环节：' + BJCM.goalById(state.goal).label + '。请补上你们项目里的一句原话。'
+  }, '来自本地内容日历，不是平台热榜。');
 }
 function runCheck() {
   syncDom();
@@ -940,9 +950,9 @@ function addWord() {
 }
 function saveProfile() {
   syncDom();
-  state.profile.className = String(state.profile.className || '').slice(0, 24);
+  state.profile.brand = String(state.profile.brand || '').slice(0, 24);
   state.profile.voice = String(state.profile.voice || '').slice(0, 240);
-  if (!BJCM.GRADES.some(function (g) { return g.id === state.profile.grade; })) state.profile.grade = 'g1';
+  if (!BJCM.GRADES.some(function (g) { return g.id === state.profile.grade; })) state.profile.grade = 'pl';
   localSet(PROFILE_KEY, state.profile);
   updateChrome();
   refreshStale();
@@ -956,8 +966,8 @@ function paintCover() {
   canvas.width = W;
   canvas.height = H;
   var grade = BJCM.gradeById(state.grade);
-  var title = (state.coverTitle || '').trim() || BJCM.clampChars((state.source.title || '班级这一周').replace(/^【演示】/, ''), 14);
-  var wash = {xin:'#F6E0C4', g1:'#DCEAD9', g2:'#D9E4F5', g3:'#E6D8F0'}[grade.id] || '#F6E0C4';
+  var title = (state.coverTitle || '').trim() || BJCM.clampChars((state.source.title || '这一周给家长').replace(/^【演示】/, ''), 14);
+  var wash = {you:'#F8E2D4', pl:'#DCEAD9', ph:'#D9E4F5', ms:'#E6D8F0', hs:'#F6E0C4'}[grade.id] || '#F6E0C4';
   var font = '"WenQuanYi Micro Hei","Droid Sans Fallback",sans-serif';
   ctx.fillStyle = '#FDF8EF';
   ctx.fillRect(0, 0, W, H);
@@ -967,15 +977,15 @@ function paintCover() {
   ctx.fillRect(0, 0, W, 28);
   ctx.fillStyle = '#3D3A34';
   ctx.font = '600 34px ' + font;
-  ctx.fillText(grade.label + '  ·  班级记录', 72, 140);
+  ctx.fillText(grade.label + '  ·  ' + BJCM.goalById(state.goal).label, 72, 140);
   ctx.font = '700 78px ' + font;
   var lines = wrapLines(ctx, title, W - 144).slice(0, 3);
   var y = 980;
   lines.forEach(function (ln) { ctx.fillText(ln, 72, y); y += 96; });
   ctx.fillStyle = '#8A857B';
   ctx.font = '500 32px ' + font;
-  var cls = (state.profile.className || '').trim() || 'X班';
-  ctx.fillText(cls + '  ·  北京高中', 72, H - 120);
+  var brand = (state.profile.brand || '').trim() || 'K12 项目';
+  ctx.fillText(BJCM.clampChars(brand, 12) + '  ·  新媒体工作台', 72, H - 120);
   ctx.fillStyle = '#F2762E';
   ctx.fillRect(72, H - 80, 84, 8);
 }
@@ -998,7 +1008,7 @@ function downloadCover() {
   if (!canvas) return;
   var a = document.createElement('a');
   a.href = canvas.toDataURL('image/png');
-  a.download = '班级封面.png';
+  a.download = 'K12封面.png';
   a.click();
   toast('已下载 PNG，图片只在本地');
 }
@@ -1035,6 +1045,14 @@ function onClick(e) {
   if (act === 'fresh') { fresh(); return; }
   if (act === 'kind') { state.source.kind = el.dataset.id === 'text' ? 'text' : 'link'; render(); return; }
   if (act === 'grade') { state.grade = el.dataset.id; render(); return; }
+  if (act === 'goal') {
+    if (!BJCM.FUNNELS.some(function (f) { return f.id === el.dataset.id; })) return;
+    state.goal = el.dataset.id;
+    render();
+    return;
+  }
+  if (act === 'hot-goal') { state.hotGoal = el.dataset.id || 'all'; render(); return; }
+  if (act === 'lf-goal') { state.lf.goal = el.dataset.id || 'all'; render(); return; }
   if (act === 'target') {
     state.targets[el.dataset.id] = !state.targets[el.dataset.id];
     if (!selectedTargets().length) { state.targets[el.dataset.id] = true; toast('至少留一个渠道'); return; }
@@ -1047,12 +1065,14 @@ function onClick(e) {
   if (act === 'example') {
     state.source.kind = 'text';
     state.source.title = el.dataset.topic || '';
-    state.source.content = '现场：' + (el.dataset.topic || '') + '。请补上你们班真正发生的一句原话。时间地点以班主任通知为准。';
+    state.source.content = '现场：' + (el.dataset.topic || '') + '。请补上你们项目里真实发生的一句原话。适合谁、下一步、时间名额以机构官方通知为准。';
     state.source.author = '示例选题';
     state.source.demo = true;
     state.source.parsed = true;
     state.source.note = '示例选题，不是链接解析。';
     state.source.platform = '小红书';
+    if (BJCM.GRADES.some(function (g) { return g.id === el.dataset.grade; })) state.grade = el.dataset.grade;
+    if (BJCM.FUNNELS.some(function (f) { return f.id === el.dataset.goal; })) state.goal = el.dataset.goal;
     render();
     return;
   }
@@ -1130,7 +1150,7 @@ function onInput(e) {
   if (t.id === 'check-text') state.checkText = t.value;
   if (t.id === 'hot-q') { state.hotQ = t.value.slice(0, 40); paintHot(); paintLow(); }
   if (t.id === 'week-theme') { state.weekTheme = t.value.slice(0, 40); paintWeek(); }
-  if (t.id === 'pf-class') { state.profile.className = t.value.slice(0, 24); updateChrome(); }
+  if (t.id === 'pf-brand') { state.profile.brand = t.value.slice(0, 24); updateChrome(); }
   if (t.id === 'pf-voice') state.profile.voice = t.value.slice(0, 240);
   if (t.id === 'cover-title') { state.coverTitle = t.value.slice(0, 24); paintCover(); refreshOutlineText(); }
   refreshStale();
